@@ -1,2 +1,2 @@
-# baconEditeurs-batch
-batch de récupération des fichiers kbart sur les sites des éditeurs de ressources électroniques
+# bacon-batch-publishers-urls
+batch to get kbart files from electronic resource publisher sites
