@@ -1,2 +1,2 @@
 # bacon-batch-publishers-urls
-batch to get kbart files from electronic resource publisher sites
+Batch program to get kbart files from electronic resources publisher sites
