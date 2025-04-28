@@ -1,11 +1,10 @@
 package fr.abes.bacon.baconediteurs.tasklets;
 
+import fr.abes.bacon.baconediteurs.service.editeurs.ALIAS_EDITEUR;
 import fr.abes.bacon.baconediteurs.service.editeurs.Editeurs;
+import fr.abes.bacon.baconediteurs.service.editeurs.EditeursFactory;
 import fr.abes.bacon.baconediteurs.service.mail.Mailer;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -13,14 +12,18 @@ import org.springframework.batch.repeat.RepeatStatus;
 public class EnvoiMailTasklet implements Tasklet, StepExecutionListener {
     private Editeurs editeur;
     private Mailer mailer;
+    private JobParameters jobParameters;
+    private EditeursFactory editeursFactory;
 
-    public EnvoiMailTasklet(Mailer mailer) {
+    public EnvoiMailTasklet(JobParameters jobParameters, EditeursFactory editeursFactory, Mailer mailer) {
+        this.jobParameters = jobParameters;
+        this.editeursFactory = editeursFactory;
         this.mailer = mailer;
     }
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
-        this.editeur = (Editeurs) stepExecution.getJobExecution().getExecutionContext().get("editeur");
+        this.editeur = editeursFactory.getEditeur(ALIAS_EDITEUR.valueOf(jobParameters.getString("editeur")));
     }
 
     @Override

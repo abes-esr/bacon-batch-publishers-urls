@@ -4,6 +4,7 @@ import fr.abes.bacon.baconediteurs.service.editeurs.ALIAS_EDITEUR;
 import fr.abes.bacon.baconediteurs.service.editeurs.Editeurs;
 import fr.abes.bacon.baconediteurs.service.editeurs.EditeursFactory;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -13,18 +14,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class GetListUrlsTasklet implements Tasklet, StepExecutionListener {
     private Editeurs editeur;
     private JobParameters jobParameters;
+    private EditeursFactory editeursFactory;
     private List<String> listeUrls = new ArrayList<>();
 
-    public GetListUrlsTasklet(JobParameters jobParameters) {
+    public GetListUrlsTasklet(JobParameters jobParameters, EditeursFactory editeursFactory) {
         this.jobParameters = jobParameters;
+        this.editeursFactory = editeursFactory;
     }
+
     @Override
     public void beforeStep(@NonNull StepExecution stepExecution) {
-        this.editeur = EditeursFactory.getEditeur(ALIAS_EDITEUR.valueOf(jobParameters.getString("editeur")));
-
+        log.info("editeur : " + jobParameters.getString("editeur"));
+        this.editeur = editeursFactory.getEditeur(ALIAS_EDITEUR.valueOf(jobParameters.getString("editeur")));
     }
 
     @Override
@@ -37,7 +42,6 @@ public class GetListUrlsTasklet implements Tasklet, StepExecutionListener {
     public ExitStatus afterStep(@NonNull StepExecution stepExecution) {
         if (stepExecution.getExitStatus().equals(ExitStatus.COMPLETED)) {
             stepExecution.getJobExecution().getExecutionContext().put("listeUrls", this.listeUrls);
-            stepExecution.getJobExecution().getExecutionContext().put("editeur", this.editeur);
         }
         return stepExecution.getExitStatus();
     }

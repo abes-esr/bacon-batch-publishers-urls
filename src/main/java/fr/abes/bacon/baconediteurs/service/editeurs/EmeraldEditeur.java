@@ -3,9 +3,10 @@ package fr.abes.bacon.baconediteurs.service.editeurs;
 import fr.abes.bacon.baconediteurs.service.mail.Mailer;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class EmeraldEditeur implements Editeurs {
+public class EmeraldEditeur implements Editeurs, Serializable {
     @Value("${mail.admin")
     private String mailAdmin;
 

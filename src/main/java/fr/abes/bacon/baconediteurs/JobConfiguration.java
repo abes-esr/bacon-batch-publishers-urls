@@ -1,5 +1,6 @@
 package fr.abes.bacon.baconediteurs;
 
+import fr.abes.bacon.baconediteurs.service.editeurs.EditeursFactory;
 import fr.abes.bacon.baconediteurs.service.mail.Mailer;
 import fr.abes.bacon.baconediteurs.tasklets.EnvoiMailTasklet;
 import fr.abes.bacon.baconediteurs.tasklets.GetListUrlsTasklet;
@@ -24,26 +25,28 @@ import java.util.Map;
 @Configuration
 public class JobConfiguration {
     private final ApplicationArguments applicationArguments;
+    private final EditeursFactory editeursFactory;
     private final Mailer mailer;
 
-    public JobConfiguration(ApplicationArguments applicationArguments, Mailer mailer) {
+    public JobConfiguration(ApplicationArguments applicationArguments, EditeursFactory editeursFactory, Mailer mailer) {
         this.applicationArguments = applicationArguments;
+        this.editeursFactory = editeursFactory;
         this.mailer = mailer;
     }
 
     @Bean
     public Tasklet getListUrlsTasklet() {
-        return new GetListUrlsTasklet(jobParameters());
+        return new GetListUrlsTasklet(jobParameters(), editeursFactory);
     }
 
     @Bean
     public Tasklet telechargementFichiersTasklet() {
-        return new TelechargementFichiersTasklet();
+        return new TelechargementFichiersTasklet(jobParameters(), editeursFactory);
     }
 
     @Bean
     public Tasklet envoiMailTasklet() {
-        return new EnvoiMailTasklet(mailer);
+        return new EnvoiMailTasklet(jobParameters(), editeursFactory, mailer);
     }
 
     @Bean
