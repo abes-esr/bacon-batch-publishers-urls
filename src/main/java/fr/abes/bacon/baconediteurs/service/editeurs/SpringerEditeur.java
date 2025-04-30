@@ -118,9 +118,9 @@ public class SpringerEditeur implements Editeur, Serializable {
                         String newPrefix = mapRenommage.get(extractPrefix);
                         if( newPrefix != null ) {
                             try {
-                                File newfile = new File(file.toString().replace(extractPrefix, newPrefix).replace(".txt", ".tsv"));
-                                Files.move(file, newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                log.info("Renommage du fichier {} en {}", filename, newfile.getName());
+                                File newFile = new File(file.toString().replace(extractPrefix, newPrefix).replace(".txt", ".tsv"));
+                                Files.move(file, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                log.info("Renommage du fichier {} en {}", filename, newFile.getName());
                             } catch (IOException e) {
                                 log.error("Impossible de renommer le fichier {}", filename);
                             }
