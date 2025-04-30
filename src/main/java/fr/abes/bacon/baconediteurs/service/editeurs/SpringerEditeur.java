@@ -12,15 +12,12 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class SpringerEditeur implements Editeur, Serializable {
-    private final String NAME = "springer";
     private final int BATCH_SIZE = 10;
     private final String pathToUrlsFile;
     private final String pathToRenommerFile;
@@ -32,11 +29,11 @@ public class SpringerEditeur implements Editeur, Serializable {
     private DownloadService downloadService;
 
     public SpringerEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
-        this.pathToUrlsFile = pathToUrlsFile + NAME + File.separator + "liste_urls.txt";
-        this.pathToRenommerFile = pathToRenommerFile + NAME + File.separator + "renommer.txt";
+        this.pathToUrlsFile = pathToUrlsFile + getAlias().toString().toLowerCase() + File.separator + "liste_urls.txt";
+        this.pathToRenommerFile = pathToRenommerFile + getAlias().toString().toLowerCase() + File.separator + "renommer.txt";
         this.pageUrl = pageUrl;
         this.downloadUrl = downloadUrl;
-        this.pathToFilesDownloaded = pathToFilesDownloaded + NAME + File.separator;
+        this.pathToFilesDownloaded = pathToFilesDownloaded + getAlias().toString().toLowerCase() + File.separator;
         this.emailAdmin = emailAdmin;
         this.downloadService = downloadService;
     }
@@ -72,7 +69,7 @@ public class SpringerEditeur implements Editeur, Serializable {
                 String fileUrl = Objects.requireNonNull(link.attribute("href")).getValue();
                 if (fileUrl.startsWith("/metadata/kbart") && fileUrl.endsWith(".txt")) {
                     if (urls.contains(fileUrl.replaceAll("/metadata/kbart/", "").replaceAll("(_\\d{4}-\\d{2}-)\\d{2}.txt", ""))) {
-                        log.debug("téléchargement : " + fileUrl);
+                        log.info("téléchargement : " + fileUrl);
 
                         for (int attempt = 0; attempt < 3; attempt++) {
                             //vérification que l'url répond
@@ -107,11 +104,31 @@ public class SpringerEditeur implements Editeur, Serializable {
     public void renommerFichier() {
         Path path = Paths.get(pathToRenommerFile);
         try {
-            Map<String, String> mapRenommage = Files.lines(path).map(line -> line.strip().split("\\|", 2))
+            Map<String, String> mapRenommage = Files.lines(path).filter(line -> !line.isEmpty()).map(line ->  line.strip().split("\\|", 2))
                     .collect(Collectors.toMap(
                             parts -> parts[0].trim(),
                             parts -> parts[1].trim()
                     ));
+
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(pathToFilesDownloaded))) {
+                stream.forEach(file -> {
+                    if (Files.isRegularFile(file)) {
+                        String filename = file.getFileName().toString();
+                        String extractPrefix = filename.split("_(\\d{4}-\\d{2}-\\d{2}).txt")[0];
+                        String newPrefix = mapRenommage.get(extractPrefix);
+                        if( newPrefix != null ) {
+                            try {
+                                File newfile = new File(file.toString().replace(extractPrefix, newPrefix).replace(".txt", ".tsv"));
+                                Files.move(file, newfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                log.info("Renommage du fichier {} en {}", filename, newfile.getName());
+                            } catch (IOException e) {
+                                log.error("Impossible de renommer le fichier {}", filename);
+                            }
+                        }
+
+                    }
+                });
+            }
         } catch (IOException e) {
             log.error("Impossible d'ouvrir le fichier de renommage Springer");
         }

@@ -42,3 +42,4 @@ hibernate.cfg.xml
 .vscode/launch.json
 .vscode/settings.json
 amplicode.xml
+/local/
