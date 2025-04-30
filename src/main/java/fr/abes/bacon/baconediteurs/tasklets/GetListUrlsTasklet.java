@@ -1,7 +1,7 @@
 package fr.abes.bacon.baconediteurs.tasklets;
 
 import fr.abes.bacon.baconediteurs.service.editeurs.ALIAS_EDITEUR;
-import fr.abes.bacon.baconediteurs.service.editeurs.Editeurs;
+import fr.abes.bacon.baconediteurs.service.editeurs.Editeur;
 import fr.abes.bacon.baconediteurs.service.editeurs.EditeursFactory;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 public class GetListUrlsTasklet implements Tasklet, StepExecutionListener {
-    private Editeurs editeur;
+    private Editeur editeur;
     private JobParameters jobParameters;
     private EditeursFactory editeursFactory;
     private List<String> listeUrls = new ArrayList<>();

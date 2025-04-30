@@ -11,26 +11,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
-public class SpringerEditeur implements Editeurs, Serializable {
+public class SpringerEditeur implements Editeur, Serializable {
     private final String NAME = "springer";
     private final int BATCH_SIZE = 10;
-    private String pathToUrlsFile;
-    private String pageUrl;
-    private String downloadUrl;
-    private String pathToFilesDownloaded;
-    private String emailAdmin;
+    private final String pathToUrlsFile;
+    private final String pathToRenommerFile;
+    private final String pageUrl;
+    private final String downloadUrl;
+    private final String pathToFilesDownloaded;
+    private final String emailAdmin;
 
     private DownloadService downloadService;
 
-    public SpringerEditeur(String pathToUrlsFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
+    public SpringerEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
         this.pathToUrlsFile = pathToUrlsFile + NAME + File.separator + "liste_urls.txt";
+        this.pathToRenommerFile = pathToRenommerFile + NAME + File.separator + "renommer.txt";
         this.pageUrl = pageUrl;
         this.downloadUrl = downloadUrl;
         this.pathToFilesDownloaded = pathToFilesDownloaded + NAME + File.separator;
@@ -97,6 +100,20 @@ public class SpringerEditeur implements Editeurs, Serializable {
         } catch (Exception e) {
             e.getStackTrace();
             log.error("Erreur dans la récupération des fichiers sur le site de l'éditeur Springer" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void renommerFichier() {
+        Path path = Paths.get(pathToRenommerFile);
+        try {
+            Map<String, String> mapRenommage = Files.lines(path).map(line -> line.strip().split("\\|", 2))
+                    .collect(Collectors.toMap(
+                            parts -> parts[0].trim(),
+                            parts -> parts[1].trim()
+                    ));
+        } catch (IOException e) {
+            log.error("Impossible d'ouvrir le fichier de renommage Springer");
         }
     }
 

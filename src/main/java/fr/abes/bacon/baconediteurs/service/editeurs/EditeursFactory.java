@@ -10,6 +10,9 @@ public class EditeursFactory {
     @Value("${pathToUrlsFile}")
     private String pathToUrlsFile;
 
+    @Value("${pathToRenommerFile}")
+    private String pathToRenommerFile;
+
     @Value("${springer.pageUrl}")
     private String springerPageUrl;
 
@@ -26,10 +29,10 @@ public class EditeursFactory {
         this.downloadService = downloadService;
     }
 
-    public Editeurs getEditeur(ALIAS_EDITEUR alias) {
+    public Editeur getEditeur(ALIAS_EDITEUR alias) {
         switch (alias) {
             case SPRINGER -> {
-                return new SpringerEditeur(pathToUrlsFile, springerPageUrl, springerDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+                return new SpringerEditeur(pathToUrlsFile, pathToRenommerFile, springerPageUrl, springerDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             case EMERALD -> {
                 return new EmeraldEditeur();

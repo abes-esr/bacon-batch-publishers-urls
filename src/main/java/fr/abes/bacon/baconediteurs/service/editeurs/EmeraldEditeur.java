@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.Serializable;
 import java.util.List;
 
-public class EmeraldEditeur implements Editeurs, Serializable {
+public class EmeraldEditeur implements Editeur, Serializable {
     @Value("${mail.admin")
     private String mailAdmin;
 
@@ -22,6 +22,11 @@ public class EmeraldEditeur implements Editeurs, Serializable {
 
     @Override
     public void telechargementFichiers(List<String> urls) {
+
+    }
+
+    @Override
+    public void renommerFichier() {
 
     }
 

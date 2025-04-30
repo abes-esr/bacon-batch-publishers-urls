@@ -1,7 +1,7 @@
 package fr.abes.bacon.baconediteurs.tasklets;
 
 import fr.abes.bacon.baconediteurs.service.editeurs.ALIAS_EDITEUR;
-import fr.abes.bacon.baconediteurs.service.editeurs.Editeurs;
+import fr.abes.bacon.baconediteurs.service.editeurs.Editeur;
 import fr.abes.bacon.baconediteurs.service.editeurs.EditeursFactory;
 import fr.abes.bacon.baconediteurs.service.mail.Mailer;
 import org.springframework.batch.core.*;
@@ -10,7 +10,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
 public class EnvoiMailTasklet implements Tasklet, StepExecutionListener {
-    private Editeurs editeur;
+    private Editeur editeur;
     private Mailer mailer;
     private JobParameters jobParameters;
     private EditeursFactory editeursFactory;

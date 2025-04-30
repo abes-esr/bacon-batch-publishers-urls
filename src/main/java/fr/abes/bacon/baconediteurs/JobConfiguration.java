@@ -4,6 +4,7 @@ import fr.abes.bacon.baconediteurs.service.editeurs.EditeursFactory;
 import fr.abes.bacon.baconediteurs.service.mail.Mailer;
 import fr.abes.bacon.baconediteurs.tasklets.EnvoiMailTasklet;
 import fr.abes.bacon.baconediteurs.tasklets.GetListUrlsTasklet;
+import fr.abes.bacon.baconediteurs.tasklets.RenommerTasklet;
 import fr.abes.bacon.baconediteurs.tasklets.TelechargementFichiersTasklet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -45,6 +46,11 @@ public class JobConfiguration {
     }
 
     @Bean
+    public Tasklet renommerTasklet() {
+        return new RenommerTasklet(jobParameters(), editeursFactory);
+    }
+
+    @Bean
     public Tasklet envoiMailTasklet() {
         return new EnvoiMailTasklet(jobParameters(), editeursFactory, mailer);
     }
@@ -64,6 +70,12 @@ public class JobConfiguration {
     }
 
     @Bean
+    public Step stepRenommer(JobRepository jobRepository, @Qualifier("renommerTasklet")Tasklet renommerTasklet, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("stepRenommer", jobRepository).allowStartIfComplete(true)
+                .tasklet(renommerTasklet, transactionManager).build();
+    }
+
+    @Bean
     public Step stepEnvoiMail(JobRepository jobRepository, @Qualifier("envoiMailTasklet") Tasklet envoiMailTasklet, PlatformTransactionManager transactionManager) {
         return new StepBuilder("stepEnvoiMail", jobRepository).allowStartIfComplete(true)
                 .tasklet(envoiMailTasklet, transactionManager)
@@ -71,9 +83,9 @@ public class JobConfiguration {
     }
 
     @Bean
-    public Job jobRecuperationKbart(JobRepository jobRepository, @Qualifier("stepGetListUrls")Step stepGetListUrls, @Qualifier("stepTelechargementFichiers")Step stepTelechargementFichiers, @Qualifier("stepEnvoiMail")Step stepEnvoiMail) {
+    public Job jobRecuperationKbart(JobRepository jobRepository, @Qualifier("stepGetListUrls")Step stepGetListUrls, @Qualifier("stepTelechargementFichiers")Step stepTelechargementFichiers, @Qualifier("stepRenommer")Step stepRenommer, @Qualifier("stepEnvoiMail")Step stepEnvoiMail) {
         return new JobBuilder("jobRecuperationKbart", jobRepository).incrementer(incrementer())
-                .start(stepGetListUrls).next(stepTelechargementFichiers).next(stepEnvoiMail)
+                .start(stepGetListUrls).next(stepTelechargementFichiers).next(stepRenommer).next(stepEnvoiMail)
                 .build();
     }
 
