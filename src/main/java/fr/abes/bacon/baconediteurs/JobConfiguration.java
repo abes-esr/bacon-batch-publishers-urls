@@ -7,6 +7,7 @@ import fr.abes.bacon.baconediteurs.tasklets.GetListUrlsTasklet;
 import fr.abes.bacon.baconediteurs.tasklets.RenommerTasklet;
 import fr.abes.bacon.baconediteurs.tasklets.TelechargementFichiersTasklet;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
