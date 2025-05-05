@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class Application {
     public static void main(String[] args) {
         // Extraction du paramètre --editeur=...
         String editeurArg = Arrays.stream(args)
@@ -35,12 +35,5 @@ public class Application implements CommandLineRunner {
         ThreadContext.put("logFileName", logFileName);
 
         SpringApplication.exit(SpringApplication.run(Application.class, args));
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("No arguments provided");
-        }
     }
 }
