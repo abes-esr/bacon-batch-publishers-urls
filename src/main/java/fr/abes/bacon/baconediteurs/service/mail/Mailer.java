@@ -39,7 +39,7 @@ public class Mailer {
         String json = "";
         ObjectMapper mapper = new ObjectMapper();
         MailDto mail = new MailDto();
-        mail.setApp("item");
+        mail.setApp("bacon");
         mail.setTo(to.split(";"));
         mail.setCc(new String[]{});
         mail.setCci(new String[]{});

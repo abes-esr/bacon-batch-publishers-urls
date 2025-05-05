@@ -136,7 +136,7 @@ public class SpringerEditeur implements Editeur, Serializable {
 
     @Override
     public void envoiMail(Mailer mailer) {
-        String requestJson = mailer.mailToJSON(emailAdmin, "Récupération des fichiers Kbart Springer termninée", "Le téléchargement des fichiers Kbart sur le site de Springer s'est terminé avec succès !");
+        String requestJson = mailer.mailToJSON(emailAdmin, "Récupération des fichiers Kbart Springer terminée", "Le téléchargement des fichiers Kbart sur le site de Springer s'est terminé avec succès !");
         mailer.sendMail(requestJson);
     }
 }
