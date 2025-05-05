@@ -67,7 +67,7 @@ COPY --from=batch-builder /application/*.jar /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
 
 RUN mkdir /scripts/local/
-RUN chmod 766 /scripts/local/
+RUN chmod 776 /scripts/local/
 
 COPY ./docker/batch/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
