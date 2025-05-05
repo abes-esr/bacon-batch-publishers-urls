@@ -30,7 +30,7 @@ public class Application implements CommandLineRunner {
         }
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        String logFileName = editeurEnum.name() + "_" + timestamp;
+        String logFileName = "logs/" + editeurEnum.name() + "_" + timestamp + ".log";
 
         ThreadContext.put("logFileName", logFileName);
 
@@ -39,7 +39,6 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // todo : controle, l'arg est bien un editeur
         if (args.length == 0) {
             throw new IllegalArgumentException("No arguments provided");
         }

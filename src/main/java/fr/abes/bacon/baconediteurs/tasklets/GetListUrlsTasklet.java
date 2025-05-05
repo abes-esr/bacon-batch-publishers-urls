@@ -28,7 +28,7 @@ public class GetListUrlsTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public void beforeStep(@NonNull StepExecution stepExecution) {
-        log.info("editeur : " + jobParameters.getString("editeur"));
+        log.debug("editeur : " + jobParameters.getString("editeur"));
         this.editeur = editeursFactory.getEditeur(ALIAS_EDITEUR.valueOf(jobParameters.getString("editeur")));
     }
 

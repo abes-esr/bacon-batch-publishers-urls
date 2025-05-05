@@ -15,7 +15,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="fr.abes.bacon.baconediteurs" level="debug" additivity="false">
+        <Logger name="fr.abes.bacon.baconediteurs" level="info" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="BaconEditeursLogAppender"/>
         </Logger>
