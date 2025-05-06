@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,11 +31,11 @@ public class SpringerEditeur implements Editeur, Serializable {
     private DownloadService downloadService;
 
     public SpringerEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
-        this.pathToUrlsFile = pathToUrlsFile + getAlias().toString().toLowerCase() + File.separator + "liste_urls.txt";
-        this.pathToRenommerFile = pathToRenommerFile + getAlias().toString().toLowerCase() + File.separator + "renommer.txt";
+        this.pathToUrlsFile = pathToUrlsFile.replace("editeur",getAlias().toString().toLowerCase()) + "liste_urls.txt";
+        this.pathToRenommerFile = pathToRenommerFile.replace("editeur",getAlias().toString().toLowerCase())  + "renommer.txt";
         this.pageUrl = pageUrl;
         this.downloadUrl = downloadUrl;
-        this.pathToFilesDownloaded = pathToFilesDownloaded + getAlias().toString().toLowerCase() + File.separator;
+        this.pathToFilesDownloaded = pathToFilesDownloaded.replace("editeur",getAlias().toString().toLowerCase()) ;
         this.emailAdmin = emailAdmin;
         this.downloadService = downloadService;
     }

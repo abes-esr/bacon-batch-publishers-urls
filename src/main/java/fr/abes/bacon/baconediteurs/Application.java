@@ -2,7 +2,6 @@ package fr.abes.bacon.baconediteurs;
 
 import fr.abes.bacon.baconediteurs.service.editeurs.ALIAS_EDITEUR;
 import org.apache.logging.log4j.ThreadContext;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -12,7 +11,9 @@ import java.util.Arrays;
 
 @SpringBootApplication
 public class Application {
+
     public static void main(String[] args) {
+
         // Extraction du paramètre --editeur=...
         String editeurArg = Arrays.stream(args)
                 .filter(arg -> arg.startsWith("--editeur="))
@@ -30,9 +31,10 @@ public class Application {
         }
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        String logFileName = "logs/" + editeurEnum.name() + "_" + timestamp + ".log";
+        String logFileName = editeurEnum.name() + "_" + timestamp + ".log";
 
         ThreadContext.put("logFileName", logFileName);
+        ThreadContext.put("editeur", editeurArg.toLowerCase());
 
         SpringApplication.exit(SpringApplication.run(Application.class, args));
     }

@@ -11,14 +11,14 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 
 @Plugin(name = "BaconEditeursLogAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
 public class BaconEditeursLogAppender extends AbstractAppender {
+
+    private String pathToLogs = "./local/editeur/logs/";
 
     private final ConcurrentMap<String, Writer> writers = new ConcurrentHashMap<>();
 
@@ -38,12 +38,12 @@ public class BaconEditeursLogAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         String filename = event.getContextData().getValue("logFileName");
-        if (filename == null || filename.isBlank()) return;
-
+        String editeur = event.getContextData().getValue("editeur");
+        String pathToLogFile = pathToLogs.replace("editeur", editeur) + filename;
+        if (pathToLogFile.isBlank()) return;
         try {
-            Writer writer = writers.computeIfAbsent(filename, fn -> {
+            Writer writer = writers.computeIfAbsent(pathToLogFile, fn -> {
                 try {
-                    Files.createDirectories(Paths.get("logs"));
                     return new BufferedWriter(new FileWriter(fn, true));
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
