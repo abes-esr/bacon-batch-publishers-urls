@@ -17,8 +17,8 @@ import java.util.List;
 @Slf4j
 public class GetListUrlsTasklet implements Tasklet, StepExecutionListener {
     private Editeur editeur;
-    private JobParameters jobParameters;
-    private EditeursFactory editeursFactory;
+    private final JobParameters jobParameters;
+    private final EditeursFactory editeursFactory;
     private List<String> listeUrls = new ArrayList<>();
 
     public GetListUrlsTasklet(JobParameters jobParameters, EditeursFactory editeursFactory) {

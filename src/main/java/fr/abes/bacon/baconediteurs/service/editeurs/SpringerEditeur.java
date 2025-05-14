@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,35 +62,38 @@ public class SpringerEditeur implements Editeur, Serializable {
     public void telechargementFichiers(List<String> urls) {
         try {
             Document doc = Jsoup.connect(pageUrl).get();
-            Elements href = doc.select("a[href]");
+            Elements hrefs = doc.select("a[href]");
             int cpt = 0;
-            for (Element link : href) {
-                String fileUrl = Objects.requireNonNull(link.attribute("href")).getValue();
-                if (fileUrl.startsWith("/metadata/kbart") && fileUrl.endsWith(".txt")) {
-                    if (urls.contains(fileUrl.replaceAll("/metadata/kbart/", "").replaceAll("(_\\d{4}-\\d{2}-)\\d{2}.txt", ""))) {
-                        log.info("téléchargement : " + fileUrl);
+            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/metadata/kbart") && url.attribute("href").getValue().endsWith(".txt")).toList();
+            for (String url : urls) {
+                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().replace("/metadata/kbart","").replaceAll("(_\\d{4}-\\d{2}-)\\d{2}.txt", "").contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
+                if (fileUrlOpt.isPresent()) {
+                    String fileUrl = fileUrlOpt.get();
+                    log.info("téléchargement : " + fileUrl);
 
-                        for (int attempt = 0; attempt < 3; attempt++) {
-                            //vérification que l'url répond
-                            ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + fileUrl);
-                            if (response.getStatusCode() == HttpStatus.OK) {
-                                Files.write(Paths.get(pathToFilesDownloaded + fileUrl.replaceAll("/metadata/kbart/", "")), Objects.requireNonNull(response.getBody()));
-                                cpt++;
-                                break;
-                            } else {
-                                log.info("fichier non trouvé {}", fileUrl);
-                                String newUrl = fileUrl.replaceAll("(\\d{4}-\\d{2}-)\\d{2}", "$101");
-                                if (!newUrl.equals(fileUrl)) {
-                                    fileUrl = newUrl;
-                                    Thread.sleep(2000);
-                                }
+                    for (int attempt = 0; attempt < 3; attempt++) {
+                        //vérification que l'url répond
+                        ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + fileUrl);
+                        if (response.getStatusCode() == HttpStatus.OK) {
+                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.replaceAll("/metadata/kbart/", "")), Objects.requireNonNull(response.getBody()));
+                            cpt++;
+                            break;
+                        } else {
+                            log.info("fichier non trouvé {}", fileUrl);
+                            String newUrl = fileUrl.replaceAll("(\\d{4}-\\d{2}-)\\d{2}", "$101");
+                            if (!newUrl.equals(fileUrl)) {
+                                fileUrl = newUrl;
+                                Thread.sleep(2000);
                             }
                         }
-                        if (cpt % BATCH_SIZE == 0) {
-                            log.debug("Pause entre 2 paquets de {} téléchargement", BATCH_SIZE);
-                            Thread.sleep(5000);
-                        }
                     }
+
+                } else {
+                    log.error("Le fichier {} est introuvable sur le site {}", url, pageUrl);
+                }
+                if (cpt % BATCH_SIZE == 0) {
+                    log.debug("Pause entre 2 paquets de {} téléchargement", BATCH_SIZE);
+                    Thread.sleep(5000);
                 }
             }
         } catch (Exception e) {
