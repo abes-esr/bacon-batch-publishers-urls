@@ -30,17 +30,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("Entering auth filtering");
         try {
             String jwt = tokenProvider.getJwtFromRequest(request);
+
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 UserDetails user = new AnonymousUserDetails(tokenProvider.getUsernameFromJwtToken(jwt));
                 Authentication authentication = new AnonymousAuthenticationToken(jwt, user, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.debug("JWT reçu : {}", jwt);
+                log.debug("Username extrait : {}", tokenProvider.getUsernameFromJwtToken(jwt));
+                log.debug("Authorities assignées : {}", user.getAuthorities());
             }
         } catch (Exception ex) {
             log.error(ex.getLocalizedMessage());
         }
 
         filterChain.doFilter(request, response);
-
     }
 
 }
