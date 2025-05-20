@@ -17,9 +17,6 @@ import java.util.concurrent.ConcurrentMap;
 
 @Plugin(name = "BaconEditeursLogAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
 public class BaconEditeursLogAppender extends AbstractAppender {
-
-    private String pathToLogs = "./local/editeur/logs/";
-
     private final ConcurrentMap<String, Writer> writers = new ConcurrentHashMap<>();
 
     protected BaconEditeursLogAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
@@ -39,6 +36,7 @@ public class BaconEditeursLogAppender extends AbstractAppender {
     public void append(LogEvent event) {
         String filename = event.getContextData().getValue("logFileName");
         String editeur = event.getContextData().getValue("editeur");
+        String pathToLogs = event.getContextData().getValue("logPath");
         String pathToLogFile = pathToLogs.replace("editeur", editeur) + filename;
         if (pathToLogFile.isBlank()) return;
         try {

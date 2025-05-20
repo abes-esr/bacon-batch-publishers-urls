@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Doc : http://logging.apache.org/log4j/2.x/manual/appenders.html#CustomDeleteOnRollover -->
 <Configuration>
-    <Properties>
-        <Property name="logPath">logs</Property>
-    </Properties>
     <Appenders>
         <!-- CONSOLE -->
         <Console name="Console">

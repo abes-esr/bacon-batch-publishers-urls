@@ -25,7 +25,7 @@ public class TelechargementFichiersTasklet implements Tasklet, StepExecutionList
     @Override
     public void beforeStep(StepExecution stepExecution) {
         this.listeUrls = (List<String>) stepExecution.getJobExecution().getExecutionContext().get("listeUrls");
-        this.editeur = editeursFactory.getEditeur(ALIAS_EDITEUR.valueOf(jobParameters.getString("editeur")));
+        this.editeur = editeursFactory.getEditeur(ALIAS_EDITEUR.valueOf(jobParameters.getString("editeur").toUpperCase()));
     }
 
     @Override

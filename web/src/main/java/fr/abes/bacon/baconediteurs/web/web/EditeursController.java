@@ -2,7 +2,9 @@ package fr.abes.bacon.baconediteurs.web.web;
 
 import fr.abes.bacon.baconediteurs.batch.service.editeurs.ALIAS_EDITEUR;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,10 @@ public class EditeursController {
 
     @Value("${batch.jar.path}")
     private String batchJarPath;
+    @Value("${log.path}")
+    private String logPath;
+    @Autowired
+    private Environment env;
 
 
     @GetMapping(value = "/launchBatchEditeur/{editeur}")
@@ -27,11 +33,11 @@ public class EditeursController {
         try {
             ALIAS_EDITEUR editeurEnum = ALIAS_EDITEUR.valueOf(editeur.toUpperCase());
             ProcessBuilder pb = new ProcessBuilder(
-                    "java", "-jar", batchJarPath, "--editeur=" + editeurEnum.name().toLowerCase()
+                    "java", "-jar", batchJarPath, "--editeur=" + editeurEnum.name().toLowerCase(), "--spring.profiles.active=" + env.getProperty("spring.profiles.active"), "--logPath=" + logPath
             );
             pb.redirectErrorStream(true);
             Process process = pb.start();
-
+            log.debug(String.join(" ", pb.command()));
             // Lecture des logs du batch en asynchrone
             new Thread(() -> {
                 try (BufferedReader reader = new BufferedReader(
