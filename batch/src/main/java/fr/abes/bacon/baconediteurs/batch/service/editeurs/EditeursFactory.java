@@ -19,6 +19,9 @@ public class EditeursFactory {
     @Value("${springer.downloadUrl}")
     private String springerDownloadUrl;
 
+    @Value("${emerald.downloadUrl}")
+    private String emeraldDownloadUrl;
+
     @Value("${pathToFilesDownloaded}")
     private String pathToFilesDownloaded;
 
@@ -35,7 +38,7 @@ public class EditeursFactory {
                 return new SpringerEditeur(pathToUrlsFile, pathToRenommerFile, springerPageUrl, springerDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             case EMERALD -> {
-                return new EmeraldEditeur();
+                return new EmeraldEditeur(pathToUrlsFile, pathToRenommerFile, emeraldDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
