@@ -1,6 +1,6 @@
 package fr.abes.bacon.baconediteurs.batch.tasklets;
 
-import fr.abes.bacon.baconediteurs.batch.service.editeurs.ALIAS_EDITEUR;
+import fr.abes.bacon.core.ALIAS_EDITEUR;
 import fr.abes.bacon.baconediteurs.batch.service.editeurs.Editeur;
 import fr.abes.bacon.baconediteurs.batch.service.editeurs.EditeursFactory;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;

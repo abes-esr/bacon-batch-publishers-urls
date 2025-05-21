@@ -1,6 +1,6 @@
 package fr.abes.bacon.baconediteurs.batch;
 
-import fr.abes.bacon.baconediteurs.batch.service.editeurs.ALIAS_EDITEUR;
+import fr.abes.bacon.core.ALIAS_EDITEUR;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -2,6 +2,8 @@ package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 
 import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
+import fr.abes.bacon.core.ALIAS_EDITEUR;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
