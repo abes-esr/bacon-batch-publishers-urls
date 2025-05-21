@@ -50,7 +50,7 @@ public class SpringerEditeur implements Editeur, Serializable {
                 urls.add(line);
             }
         } catch (IOException e) {
-            log.error("Erreur d'accès au fichier des urls");
+            log.error("Erreur d'accès au fichier des urls Springer");
             throw e;
         }
 
