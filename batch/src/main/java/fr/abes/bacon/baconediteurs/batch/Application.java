@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 @SpringBootApplication
 public class Application {
-
     public static void main(String[] args) {
 
         // Extraction du paramètre --editeur=...
@@ -20,7 +19,11 @@ public class Application {
                 .map(arg -> arg.substring("--editeur=".length()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Le paramètre '--editeur=XXX' est obligatoire."));
-
+        String logPathArg = Arrays.stream(args)
+                .filter(arg -> arg.startsWith("--logPath="))
+                .map(arg -> arg.substring("--logPath=".length()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Le paramètre '--logPath=XXX' est obligatoire."));
         // Validation contre l'ENUM
         ALIAS_EDITEUR editeurEnum;
         try {
@@ -35,6 +38,7 @@ public class Application {
 
         ThreadContext.put("logFileName", logFileName);
         ThreadContext.put("editeur", editeurArg.toLowerCase());
+        ThreadContext.put("logPath", logPathArg.toLowerCase());
 
         SpringApplication.exit(SpringApplication.run(Application.class, args));
     }
