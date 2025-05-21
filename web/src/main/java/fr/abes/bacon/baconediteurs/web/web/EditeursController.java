@@ -1,6 +1,6 @@
 package fr.abes.bacon.baconediteurs.web.web;
 
-import fr.abes.bacon.baconediteurs.batch.service.editeurs.ALIAS_EDITEUR;
+import fr.abes.bacon.core.ALIAS_EDITEUR;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

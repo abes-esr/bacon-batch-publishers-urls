@@ -1,6 +1,7 @@
 package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 
 import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
+import fr.abes.bacon.core.ALIAS_EDITEUR;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

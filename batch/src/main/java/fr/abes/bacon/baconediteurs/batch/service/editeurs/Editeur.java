@@ -1,6 +1,7 @@
 package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
+import fr.abes.bacon.core.ALIAS_EDITEUR;
 
 import java.io.IOException;
 import java.util.List;
