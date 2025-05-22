@@ -56,13 +56,13 @@ RUN dnf install -y tzdata && \
     echo "Europe/London" > /etc/timezone
 
 
-COPY --from=batch-builder /application/*.jar /scripts/bacon-batch-publishers.jar
+COPY --from=batch-builder /application/*.jar /scripts/batch/bacon-batch-publishers.jar
 COPY --from=build-image build/web/target/*.jar /scripts/bacon-web-publishers.jar
-RUN chmod +x /scripts/bacon-batch-publishers.jar
+RUN chmod +x /scripts/batch/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-web-publishers.jar
 
-RUN mkdir /scripts/local/
-RUN chmod 776 /scripts/local/
+RUN mkdir /scripts/batch/local/
+RUN chmod 776 /scripts/batch/local/
 
 ENTRYPOINT ["java", "-jar", "bacon-web-publishers.jar"]
 

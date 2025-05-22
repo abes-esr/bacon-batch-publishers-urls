@@ -10,7 +10,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="fr.abes.bacon.baconediteurs.web" level="info" additivity="false">
+        <Logger name="fr.abes" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
         <Root level="info">
