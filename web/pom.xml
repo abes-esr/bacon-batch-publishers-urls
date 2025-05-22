@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>web</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>web</name>
 
@@ -92,6 +92,13 @@
                 <configuration>
                     <mainClass>fr.abes.bacon.baconediteurs.web.BaconEditeurs</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal> <!-- INDISPENSABLE -->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
