@@ -23,9 +23,7 @@ RUN mvn --batch-mode \
 FROM maven:3-eclipse-temurin-17 as batch-builder
 WORKDIR application
 COPY --from=build-image build/batch/target/*.jar bacon-batch-publishers.jar
-COPY --from=build-image build/web/target/*.jar bacon-web-publishers.jar
 RUN java -Djarmode=layertools -jar bacon-batch-publishers.jar extract
-RUN java -Djarmode=layertools -jar bacon-web-publishers.jar extract
 
 FROM rockylinux:8 as api-image
 WORKDIR scripts
@@ -58,8 +56,8 @@ RUN dnf install -y tzdata && \
     echo "Europe/London" > /etc/timezone
 
 
-COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
-COPY --from=batch-builder /application/bacon-web-publishers.jar /scripts/bacon-web-publishers.jar
+COPY --from=batch-builder /application/*.jar /scripts/bacon-batch-publishers.jar
+COPY --from=build-image build/web/target/*.jar /scripts/bacon-web-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-web-publishers.jar
 
@@ -105,9 +103,7 @@ COPY ./docker/batch/baconBatchPublishersSpringer.sh /scripts/baconBatchPublisher
 RUN chmod +x /scripts/baconBatchPublishersSpringer.sh
 
 COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
-COPY --from=batch-builder /application/bacon-web-publishers.jar /scripts/bacon-web-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
-RUN chmod +x /scripts/bacon-web-publishers.jar
 
 RUN mkdir /scripts/local/
 RUN chmod 776 /scripts/local/
