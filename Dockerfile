@@ -40,10 +40,10 @@ ENV LC_ALL fr_FR.UTF-8
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY --from=batch-builder application/dependencies/ ./
-COPY --from=batch-builder application/spring-boot-loader/ ./
-COPY --from=batch-builder application/snapshot-dependencies/ ./
-COPY --from=batch-builder application/application/ ./
+COPY --from=batch-builder application/dependencies/ ./batch/
+COPY --from=batch-builder application/spring-boot-loader/ ./batch/
+COPY --from=batch-builder application/snapshot-dependencies/ ./batch/
+COPY --from=batch-builder application/application/ ./batch/
 # systeme pour les crontab
 # cronie: remplacant de crond qui support le CTRL+C dans docker (sans ce système c'est compliqué de stopper le conteneur)
 # gettext: pour avoir envsubst qui permet de gérer le template tasks.tmpl
