@@ -45,4 +45,8 @@ jobs:
             # publication de l'image pour le batch publishers
             docker build . --target batch-image -t ${DOCKER_TAG}-batch-publishers
             docker push ${DOCKER_TAG}-batch-publishers
+          
+            # publication de l'image pour l'API
+            docker build . --target api-image -t ${DOCKER_TAG}-api-publishers
+            docker push ${DOCKER_TAG}-api-publishers
           done
