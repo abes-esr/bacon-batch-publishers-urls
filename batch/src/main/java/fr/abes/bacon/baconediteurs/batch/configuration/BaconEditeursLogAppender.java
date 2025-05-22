@@ -11,6 +11,9 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -39,9 +42,14 @@ public class BaconEditeursLogAppender extends AbstractAppender {
         String pathToLogs = event.getContextData().getValue("logPath");
         String pathToLogFile = pathToLogs.replace("editeur", editeur) + filename;
         if (pathToLogFile.isBlank()) return;
+        Path path = Paths.get(pathToLogFile);
+        Files.isDirectory(path);
         try {
+
             Writer writer = writers.computeIfAbsent(pathToLogFile, fn -> {
+                Path logFilePath = Paths.get(fn);
                 try {
+                    Files.createDirectories(logFilePath.getParent());
                     return new BufferedWriter(new FileWriter(fn, true));
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
