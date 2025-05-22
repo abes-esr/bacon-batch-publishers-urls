@@ -61,8 +61,8 @@ COPY --from=build-image build/web/target/*.jar /scripts/bacon-web-publishers.jar
 RUN chmod +x /scripts/batch/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-web-publishers.jar
 
-RUN mkdir /scripts/batch/local/
-RUN chmod 776 /scripts/batch/local/
+RUN mkdir /scripts/local/
+RUN chmod 776 /scripts/local/
 
 ENTRYPOINT ["java", "-jar", "bacon-web-publishers.jar"]
 
