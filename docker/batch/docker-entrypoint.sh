@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Paramètres par défaut du conteneur
 export BACON_BATCH_PUBLISHERS_AT_STARTUP=${BACON_BATCH_PUBLISHERS_AT_STARTUP:='1'}

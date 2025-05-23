@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Doc : http://logging.apache.org/log4j/2.x/manual/appenders.html#CustomDeleteOnRollover -->
+<Configuration>
+    <Appenders>
+        <!-- CONSOLE -->
+        <Console name="Console">
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}}{white} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{dark,yellow}: %msg%n%throwable" />
+        </Console>
+
+        <BaconEditeursLogAppender name="BaconEditeursLogAppender" />
+    </Appenders>
+
+    <Loggers>
+        <Logger name="fr.abes.bacon.baconediteurs.batch" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="BaconEditeursLogAppender"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
