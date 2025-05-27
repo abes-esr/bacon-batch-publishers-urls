@@ -101,6 +101,8 @@ RUN dnf install -y tzdata && \
 
 COPY ./docker/batch/baconBatchPublishersSpringer.sh /scripts/baconBatchPublishersSpringer.sh
 RUN chmod +x /scripts/baconBatchPublishersSpringer.sh
+COPY ./docker/batch/baconBatchPublishersEmerald.sh /scripts/baconBatchPublishersEmerald.sh
+RUN chmod +x /scripts/baconBatchPublishersEmerald.sh
 
 COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
