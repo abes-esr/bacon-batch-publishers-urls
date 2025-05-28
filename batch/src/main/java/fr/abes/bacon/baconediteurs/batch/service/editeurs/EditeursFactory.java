@@ -1,6 +1,7 @@
 package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 
 import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
+import fr.abes.bacon.baconediteurs.batch.service.FtpService;
 import fr.abes.bacon.core.ALIAS_EDITEUR;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EditeursFactory {
     private final DownloadService downloadService;
+    private final FtpService ftpService;
     @Value("${pathToUrlsFile}")
     private String pathToUrlsFile;
 
@@ -29,8 +31,18 @@ public class EditeursFactory {
     @Value("${mail.admin}")
     private String mailAdmin;
 
-    public EditeursFactory(DownloadService downloadService) {
+    @Value("${ebsco.hostname}")
+    private String ebscoHost;
+    @Value("${ebsco.username}")
+    private String ebscoUsername;
+    @Value("${ebsco.password}")
+    private String ebscoPassword;
+    @Value("${ebsco.filepath}")
+    private String ebscoFilepath;
+
+    public EditeursFactory(DownloadService downloadService, FtpService ftpService) {
         this.downloadService = downloadService;
+        this.ftpService = ftpService;
     }
 
     public Editeur getEditeur(ALIAS_EDITEUR alias) {
@@ -40,6 +52,9 @@ public class EditeursFactory {
             }
             case EMERALD -> {
                 return new EmeraldEditeur(pathToUrlsFile, pathToRenommerFile, emeraldDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case EBSCO -> {
+                return new EbscoEditeur(pathToUrlsFile, ebscoHost, ebscoUsername, ebscoPassword, ebscoFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
