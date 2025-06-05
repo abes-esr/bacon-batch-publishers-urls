@@ -79,7 +79,7 @@ public class EbscoEditeur implements Editeur, Serializable {
     }
 
     @Override
-    public void renommerFichier() {
+    public void reformatFichier() {
         Path path = Paths.get(pathToUrlsFile);
         try {
             ftpService.connect(ebscoHost, ebscoUsername, ebscoPassword, ebscoFilePath);

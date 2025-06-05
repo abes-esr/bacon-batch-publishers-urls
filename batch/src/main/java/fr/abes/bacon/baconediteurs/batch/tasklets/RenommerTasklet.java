@@ -25,7 +25,7 @@ public class RenommerTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        this.editeur.renommerFichier();
+        this.editeur.reformatFichier();
         return RepeatStatus.FINISHED;
     }
 

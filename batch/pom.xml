@@ -75,6 +75,10 @@
             <artifactId>commons-net</artifactId>
             <version>3.11.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

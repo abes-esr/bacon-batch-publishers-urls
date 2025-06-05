@@ -16,6 +16,9 @@ public class EditeursFactory {
     @Value("${pathToRenommerFile}")
     private String pathToRenommerFile;
 
+    @Value("${pathToFusionnerFile}")
+    private String pathToFusionnerFile;
+
     @Value("${springer.pageUrl}")
     private String springerPageUrl;
 
@@ -40,6 +43,15 @@ public class EditeursFactory {
     @Value("${ebsco.filepath}")
     private String ebscoFilepath;
 
+    @Value("${degruyter.hostname}")
+    private String degruyterHost;
+    @Value("${degruyter.username}")
+    private String degruyterUsername;
+    @Value("${degruyter.password}")
+    private String degruyterPassword;
+    @Value("${degruyter.filepath}")
+    private String degruyterFilepath;
+
     public EditeursFactory(DownloadService downloadService, FtpService ftpService) {
         this.downloadService = downloadService;
         this.ftpService = ftpService;
@@ -55,6 +67,9 @@ public class EditeursFactory {
             }
             case EBSCO -> {
                 return new EbscoEditeur(pathToUrlsFile, ebscoHost, ebscoUsername, ebscoPassword, ebscoFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
+            }
+            case DEGRUYTER -> {
+                return new DegruyterEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, degruyterHost, degruyterUsername, degruyterPassword, degruyterFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
