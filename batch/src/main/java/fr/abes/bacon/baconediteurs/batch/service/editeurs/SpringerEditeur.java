@@ -104,7 +104,7 @@ public class SpringerEditeur implements Editeur, Serializable {
     }
 
     @Override
-    public void renommerFichier() {
+    public void reformatFichier() {
         Path path = Paths.get(pathToRenommerFile);
         try {
             Map<String, String> mapRenommage = Files.lines(path).filter(line -> !line.isEmpty()).map(line ->  line.strip().split("\\|", 2))
