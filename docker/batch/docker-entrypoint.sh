@@ -21,6 +21,10 @@ if [ "$BACON_BATCH_PUBLISHERS_AT_STARTUP" = "1" ]; then
   /scripts/baconBatchPublishersSpringer.sh
   echo "-> Lancement de baconBatchPublishersEmerald.sh au démarrage du conteneur"
   /scripts/baconBatchPublishersEmerald.sh
+  echo "-> Lancement de baconBatchPublishersEbsco.sh au démarrage du conteneur"
+  /scripts/baconBatchPublishersEbsco.sh
+  echo "-> Lancement de baconBatchPublishersDegruyter.sh au démarrage du conteneur"
+  /scripts/baconBatchPublishersDegruyter.sh
 fi
 
 exec "$@"

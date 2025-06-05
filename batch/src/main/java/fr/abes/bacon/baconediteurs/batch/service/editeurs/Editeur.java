@@ -15,5 +15,5 @@ public interface Editeur {
 
       void envoiMail(Mailer mailer);
 
-      void renommerFichier();
+      void reformatFichier();
 }
