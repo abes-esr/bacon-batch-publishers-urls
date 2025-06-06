@@ -103,6 +103,10 @@ COPY ./docker/batch/baconBatchPublishersSpringer.sh /scripts/baconBatchPublisher
 RUN chmod +x /scripts/baconBatchPublishersSpringer.sh
 COPY ./docker/batch/baconBatchPublishersEmerald.sh /scripts/baconBatchPublishersEmerald.sh
 RUN chmod +x /scripts/baconBatchPublishersEmerald.sh
+COPY ./docker/batch/baconBatchPublishersEbsco.sh /scripts/baconBatchPublishersEbsco.sh
+RUN chmod +x /scripts/baconBatchPublishersEbsco.sh
+COPY ./docker/batch/baconBatchPublishersDegruyter.sh /scripts/baconBatchPublishersDegruyter.sh
+RUN chmod +x /scripts/baconBatchPublishersDegruyter.sh
 
 COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
