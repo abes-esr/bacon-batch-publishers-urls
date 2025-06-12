@@ -25,6 +25,12 @@ public class EditeursFactory {
     @Value("${springer.downloadUrl}")
     private String springerDownloadUrl;
 
+    @Value("${projecteuclid.pageUrl}")
+    private String projecteuclidPageUrl;
+
+    @Value("${projecteuclid.downloadUrl}")
+    private String projecteuclidDownloadUrl;
+
     @Value("${emerald.downloadUrl}")
     private String emeraldDownloadUrl;
 
@@ -70,6 +76,10 @@ public class EditeursFactory {
             }
             case DEGRUYTER -> {
                 return new DegruyterEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, degruyterHost, degruyterUsername, degruyterPassword, degruyterFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
+            }
+            case PROJECTEUCLID -> {
+                return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
