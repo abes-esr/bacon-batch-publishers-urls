@@ -106,7 +106,7 @@ RUN chmod +x /scripts/baconBatchPublishersEmerald.sh
 COPY ./docker/batch/baconBatchPublishersEbsco.sh /scripts/baconBatchPublishersEbsco.sh
 RUN chmod +x /scripts/baconBatchPublishersEbsco.sh
 COPY ./docker/batch/baconBatchPublishersDegruyter.sh /scripts/baconBatchPublishersDegruyter.sh
-RUN chmod +x /scripts/baconBatchPublishersDegruyter.sh \
+RUN chmod +x /scripts/baconBatchPublishersDegruyter.sh
 COPY ./docker/batch/baconBatchPublishersAnnualReviews.sh /scripts/baconBatchPublishersAnnualReviews.sh
 RUN chmod +x /scripts/baconBatchPublishersAnnualReviews.sh
 
