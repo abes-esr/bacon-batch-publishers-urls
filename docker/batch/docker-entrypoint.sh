@@ -27,6 +27,8 @@ if [ "$BACON_BATCH_PUBLISHERS_AT_STARTUP" = "1" ]; then
   /scripts/baconBatchPublishersDegruyter.sh
   echo "-> Lancement de baconBatchPublishersAnnualReviews.sh au démarrage du conteneur"
   /scripts/baconBatchPublishersAnnualReviews.sh
+  echo "-> Lancement de baconBatchPublishersProjectEuclid.sh au démarrage du conteneur"
+  /scripts/baconBatchPublishersProjectEuclid.sh
 fi
 
 exec "$@"
