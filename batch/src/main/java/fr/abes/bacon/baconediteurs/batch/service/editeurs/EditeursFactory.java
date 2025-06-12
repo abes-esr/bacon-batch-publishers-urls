@@ -25,6 +25,12 @@ public class EditeursFactory {
     @Value("${springer.downloadUrl}")
     private String springerDownloadUrl;
 
+    @Value("${annualreviews.pageUrl}")
+    private String annualReviewsPageUrl;
+
+    @Value("${annualreviews.downloadUrl}")
+    private String annualReviewsDownloadUrl;
+
     @Value("${projecteuclid.pageUrl}")
     private String projecteuclidPageUrl;
 
@@ -80,6 +86,9 @@ public class EditeursFactory {
             case PROJECTEUCLID -> {
                 return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
 
+            }
+            case ANNUALREVIEWS -> {
+                return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }

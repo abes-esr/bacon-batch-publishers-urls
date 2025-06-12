@@ -23,6 +23,8 @@ public class DownloadService {
     }
 
     public ResponseEntity<byte[]> getRestCall(String url) throws RestClientException {
+        log.debug("Appel de l'URL {}", url);
+        return restTemplate.exchange(url, HttpMethod.GET, null, byte[].class);
         log.debug("GET : " + url);
         // En-têtes pour simuler un navigateur
         HttpHeaders headers = new HttpHeaders();
