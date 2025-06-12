@@ -37,12 +37,12 @@ public class CloudflareBypass {
                 .executeScript("return document.readyState")
                 .equals("complete"));
 
-            // 3) On attend l'apparition du tbody
+            // 3) On attend l'apparition du waitedElementSelector
             wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(waitedElementSelector)));
 
             // 4) On récupère le HTML
             String html = driver.getPageSource();
-            log.info("HTML récupéré, longueur = {} caractères", html.length());
+            log.debug("HTML récupéré, longueur = {} caractères", html.length());
 
             return Jsoup.parse(html, url);
 

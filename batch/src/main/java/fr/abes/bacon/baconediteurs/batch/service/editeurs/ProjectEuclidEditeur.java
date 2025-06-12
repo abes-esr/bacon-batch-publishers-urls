@@ -1,5 +1,6 @@
 package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 
+import fr.abes.bacon.baconediteurs.batch.service.CloudflareBypass;
 import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
 import fr.abes.bacon.core.ALIAS_EDITEUR;
@@ -61,14 +62,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = Jsoup.connect(pageUrl)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                            "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                            "Chrome/114.0.0.0 Safari/537.36")
-                    .referrer("https://www.google.com")
-                    .timeout(15_000)            // 15 secondes
-                    .followRedirects(true)
-                    .get();
+            Document doc = CloudflareBypass.fetchDocumentWithSelenium(pageUrl,"ul");
             Elements hrefs = doc.select("a[href]");
             int cpt = 0;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("documents/2025%20Title%20Lists") && url.attribute("href").getValue().endsWith(".txt")).toList();
