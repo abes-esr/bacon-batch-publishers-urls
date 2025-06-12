@@ -25,6 +25,12 @@ public class EditeursFactory {
     @Value("${springer.downloadUrl}")
     private String springerDownloadUrl;
 
+    @Value("${annualreviews.pageUrl}")
+    private String annualReviewsPageUrl;
+
+    @Value("${annualreviews.downloadUrl}")
+    private String annualReviewsDownloadUrl;
+
     @Value("${emerald.downloadUrl}")
     private String emeraldDownloadUrl;
 
@@ -70,6 +76,9 @@ public class EditeursFactory {
             }
             case DEGRUYTER -> {
                 return new DegruyterEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, degruyterHost, degruyterUsername, degruyterPassword, degruyterFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
+            }
+            case ANNUALREVIEWS -> {
+                return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
