@@ -109,6 +109,8 @@ COPY ./docker/batch/baconBatchPublishersDegruyter.sh /scripts/baconBatchPublishe
 RUN chmod +x /scripts/baconBatchPublishersDegruyter.sh
 COPY ./docker/batch/baconBatchPublishersAnnualReviews.sh /scripts/baconBatchPublishersAnnualReviews.sh
 RUN chmod +x /scripts/baconBatchPublishersAnnualReviews.sh
+COPY ./docker/batch/baconBatchPublishersProjectEuclid.sh /scripts/baconBatchPublishersProjectEuclid.sh
+RUN chmod +x /scripts/baconBatchPublishersProjectEuclid.sh
 
 COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar

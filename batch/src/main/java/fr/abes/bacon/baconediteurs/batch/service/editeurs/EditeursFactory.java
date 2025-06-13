@@ -31,6 +31,12 @@ public class EditeursFactory {
     @Value("${annualreviews.downloadUrl}")
     private String annualReviewsDownloadUrl;
 
+    @Value("${projecteuclid.pageUrl}")
+    private String projecteuclidPageUrl;
+
+    @Value("${projecteuclid.downloadUrl}")
+    private String projecteuclidDownloadUrl;
+
     @Value("${emerald.downloadUrl}")
     private String emeraldDownloadUrl;
 
@@ -76,6 +82,10 @@ public class EditeursFactory {
             }
             case DEGRUYTER -> {
                 return new DegruyterEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, degruyterHost, degruyterUsername, degruyterPassword, degruyterFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
+            }
+            case PROJECTEUCLID -> {
+                return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+
             }
             case ANNUALREVIEWS -> {
                 return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
