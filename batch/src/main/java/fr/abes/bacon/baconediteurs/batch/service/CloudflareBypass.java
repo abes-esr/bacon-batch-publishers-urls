@@ -1,6 +1,11 @@
 package fr.abes.bacon.baconediteurs.batch.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
+import java.util.UUID;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
@@ -15,15 +20,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CloudflareBypass {
 
-    public static Document fetchDocumentWithSelenium(String url, String waitedElementSelector) {
+    public static Document fetchDocumentWithSelenium(String url, String waitedElementSelector) throws IOException {
+        Path tempProfile = Files.createTempDirectory("chrome-profile-" + UUID.randomUUID());
         ChromeOptions options = new ChromeOptions();
         options.addArguments(
             "--headless",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
             "--disable-gpu",
             "--window-size=1920,1080",
             "--remote-allow-origins=*",
             "--disable-blink-features=AutomationControlled",
-            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+            "--user-data-dir=" + tempProfile.toAbsolutePath().toString()
+
         );
 
         WebDriver driver = new ChromeDriver(options);
