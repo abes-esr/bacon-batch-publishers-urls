@@ -25,6 +25,18 @@ public class EditeursFactory {
     @Value("${springer.downloadUrl}")
     private String springerDownloadUrl;
 
+    @Value("${annualreviews.pageUrl}")
+    private String annualReviewsPageUrl;
+
+    @Value("${annualreviews.downloadUrl}")
+    private String annualReviewsDownloadUrl;
+
+    @Value("${projecteuclid.pageUrl}")
+    private String projecteuclidPageUrl;
+
+    @Value("${projecteuclid.downloadUrl}")
+    private String projecteuclidDownloadUrl;
+
     @Value("${emerald.downloadUrl}")
     private String emeraldDownloadUrl;
 
@@ -52,6 +64,9 @@ public class EditeursFactory {
     @Value("${degruyter.filepath}")
     private String degruyterFilepath;
 
+    @Value("${duke.pageUrl}")
+    private String dukePageUrl;
+
     public EditeursFactory(DownloadService downloadService, FtpService ftpService) {
         this.downloadService = downloadService;
         this.ftpService = ftpService;
@@ -70,6 +85,16 @@ public class EditeursFactory {
             }
             case DEGRUYTER -> {
                 return new DegruyterEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, degruyterHost, degruyterUsername, degruyterPassword, degruyterFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
+            }
+            case DUKE -> {
+                return new DukeEditeur(pathToUrlsFile, pathToRenommerFile, dukePageUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case PROJECTEUCLID -> {
+                return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+
+            }
+            case ANNUALREVIEWS -> {
+                return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }

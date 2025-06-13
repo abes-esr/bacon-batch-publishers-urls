@@ -314,9 +314,8 @@ public class DegruyterEditeur implements Editeur, Serializable {
      * @return Un objet Pattern compilé représentant l'expression régulière
      */
     private Pattern getPattern(List<String> urls){
-        String annee = Calendar.getInstance().get(Calendar.YEAR) + "";
-        String mois = Calendar.getInstance().get(Calendar.MONTH) + 1 + "";
-        mois = (mois.length() == 1) ? "0" + mois : mois;
+        String annee = "\\d{4}";
+        String mois = "\\d{2}";
         // Construction du motif regex
         String joinedKeys = String.join("|", urls);
         String regex = "^(" + joinedKeys + ")" + annee + "-" + mois + "-\\d{2}\\.txt$";
