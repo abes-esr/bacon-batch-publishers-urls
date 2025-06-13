@@ -64,6 +64,9 @@ public class EditeursFactory {
     @Value("${degruyter.filepath}")
     private String degruyterFilepath;
 
+    @Value("${duke.pageUrl}")
+    private String dukePageUrl;
+
     public EditeursFactory(DownloadService downloadService, FtpService ftpService) {
         this.downloadService = downloadService;
         this.ftpService = ftpService;
@@ -82,6 +85,9 @@ public class EditeursFactory {
             }
             case DEGRUYTER -> {
                 return new DegruyterEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, degruyterHost, degruyterUsername, degruyterPassword, degruyterFilepath, pathToFilesDownloaded, mailAdmin, ftpService);
+            }
+            case DUKE -> {
+                return new DukeEditeur(pathToUrlsFile, pathToRenommerFile, dukePageUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             case PROJECTEUCLID -> {
                 return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
