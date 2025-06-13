@@ -111,6 +111,8 @@ COPY ./docker/batch/baconBatchPublishersAnnualReviews.sh /scripts/baconBatchPubl
 RUN chmod +x /scripts/baconBatchPublishersAnnualReviews.sh
 COPY ./docker/batch/baconBatchPublishersProjectEuclid.sh /scripts/baconBatchPublishersProjectEuclid.sh
 RUN chmod +x /scripts/baconBatchPublishersProjectEuclid.sh
+COPY ./docker/batch/baconBatchPublishersDuke.sh /scripts/baconBatchPublishersDuke.sh
+RUN chmod +x /scripts/baconBatchPublishersDuke.sh
 
 COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
