@@ -120,6 +120,9 @@ RUN chmod +x /scripts/bacon-batch-publishers.jar
 RUN mkdir /scripts/local/
 RUN chmod 776 /scripts/local/
 
+# variable d’environnement pour indiquer à votre code où se trouve le binaire
+ENV CHROME_BINARY=/root/.cache/selenium/chrome/linux64/114.0.5735.90/chrome
+
 COPY ./docker/batch/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]

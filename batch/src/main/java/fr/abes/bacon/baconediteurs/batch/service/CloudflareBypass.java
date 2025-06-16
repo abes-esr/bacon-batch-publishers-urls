@@ -1,27 +1,20 @@
 package fr.abes.bacon.baconediteurs.batch.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
 
 @Slf4j
 public class CloudflareBypass {
@@ -51,22 +44,6 @@ public class CloudflareBypass {
      * Lance un ChromeDriver headless avec un profile temporaire unique.
      */
     private static Document fetchWithSelenium(String url, String waitedCssSelector) throws IOException {
-        // 1) on créé un TMPDIR unique pour cette session
-        Path tmpDir = Files.createTempDirectory("selenium-tmp-");
-        tmpDir.toFile().deleteOnExit();
-
-        // 2) on duplique l’environnement en y injectant TMPDIR
-        Map<String,String> env = new HashMap<>(System.getenv());
-        env.put("TMPDIR", tmpDir.toString());
-
-        // 3) on démarre un service ChromeDriver avec cet environnement
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingAnyFreePort()
-                .withEnvironment(env)
-                .build();
-        service.start();
-
-        // 4) on monte les options Chrome (sans --user-data-dir)
         ChromeOptions options = new ChromeOptions();
         options.addArguments(
                 "--headless",
@@ -79,10 +56,14 @@ public class CloudflareBypass {
                 "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                         + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36"
         );
-        options.setBinary("/root/.cache/selenium/chrome/linux64/114.0.5735.90/chrome");
 
-        // 5) on se connecte au service
-        WebDriver driver = new RemoteWebDriver(service.getUrl(), options);
+        // On ne fixe le binaire que si la variable d'env CHROME_BINARY est définie et valide
+        String chromeBin = System.getenv("CHROME_BINARY");
+        if (chromeBin != null && Files.isRegularFile(Paths.get(chromeBin))) {
+            options.setBinary(chromeBin);
+        }
+
+        WebDriver driver = new ChromeDriver(options);
         try {
             driver.get(url);
             new WebDriverWait(driver, Duration.ofSeconds(30))
@@ -92,18 +73,7 @@ public class CloudflareBypass {
                     .toString();
             return Jsoup.parse(html);
         } finally {
-            // 6) on ferme proprement
-            try { driver.quit(); } catch(Exception ignored){}
-            try { service.stop(); } catch(Exception ignored){}
-            // 7) on nettoie le TMPDIR
-            try {
-                Files.walk(tmpDir)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-            } catch(IOException ioe) {
-                log.warn("Impossible de supprimer tmpDir {}", tmpDir, ioe);
-            }
+            try { driver.quit(); } catch (Exception ignored) { }
         }
     }
 }
