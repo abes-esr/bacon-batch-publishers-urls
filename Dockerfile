@@ -99,6 +99,39 @@ RUN dnf install -y tzdata && \
     ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
     echo "Europe/London" > /etc/timezone
 
+RUN dnf install -y \
+      wget \
+      unzip \
+      nss \
+      GConf2 \
+      libXScrnSaver \
+      redhat-lsb-core \
+    && dnf clean all
+
+# Dans votre batch-image, remplacez la section Chrome par :
+
+# Activer le dépôt EPEL pour avoir plus de paquets
+RUN dnf install -y epel-release && dnf clean all
+
+# Installer Chromium et les dépendances
+RUN dnf install -y \
+      chromium \
+      chromium-headless \
+      wget \
+      unzip \
+    && dnf clean all
+
+# Installer ChromeDriver compatible
+ARG CHROMEDRIVER_VERSION=114.0.5735.90
+RUN wget -q -O /tmp/chromedriver.zip \
+       https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip \
+    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm /tmp/chromedriver.zip
+
+# Pointer vers le binaire Chromium
+ENV CHROME_BINARY=/usr/bin/chromium-browser
+
 COPY ./docker/batch/baconBatchPublishersSpringer.sh /scripts/baconBatchPublishersSpringer.sh
 RUN chmod +x /scripts/baconBatchPublishersSpringer.sh
 COPY ./docker/batch/baconBatchPublishersEmerald.sh /scripts/baconBatchPublishersEmerald.sh

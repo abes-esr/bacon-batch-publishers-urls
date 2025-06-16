@@ -62,7 +62,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = CloudflareBypass.fetchDocumentWithSelenium(pageUrl,"ul");
+            Document doc = CloudflareBypass.fetchDocument(pageUrl,"ul");
             Elements hrefs = doc.select("a[href]");
             int cpt = 0;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("documents/2025%20Title%20Lists") && url.attribute("href").getValue().endsWith(".txt")).toList();

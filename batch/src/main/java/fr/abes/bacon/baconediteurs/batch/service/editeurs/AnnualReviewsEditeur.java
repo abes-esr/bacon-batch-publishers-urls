@@ -61,7 +61,7 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = CloudflareBypass.fetchDocumentWithSelenium(pageUrl,"tbody");
+            Document doc = CloudflareBypass.fetchDocument(pageUrl,"tbody");
             Elements hrefs = doc.select("a[href]");
             int cpt = 0;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/pb-assets/ar-site/kbart") && url.attribute("href").getValue().endsWith(".txt")).toList();
