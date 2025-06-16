@@ -1,9 +1,11 @@
 package fr.abes.bacon.baconediteurs.batch.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.UUID;
 
 import org.jsoup.Jsoup;
@@ -45,41 +47,41 @@ public class CloudflareBypass {
      * Lance un ChromeDriver headless avec un profile temporaire unique.
      */
     private static Document fetchWithSelenium(String url, String waitedCssSelector) throws IOException {
-        Path tempProfile = Files.createTempDirectory("chrome-profile-" + UUID.randomUUID());
+        // Création d’un profile Chrome temporaire et unique
+        Path userDataDir = Files.createTempDirectory("chrome-user-data-");
+        userDataDir.toFile().deleteOnExit();
+
         ChromeOptions options = new ChromeOptions();
-        options.addArguments(
-                "--headless",
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--window-size=1920,1080",
-                "--remote-allow-origins=*",
-                "--disable-blink-features=AutomationControlled",
-                "--user-data-dir=" + tempProfile.toAbsolutePath(),
-                "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                        + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-        );
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        // on remplace la valeur statique par notre dossier unique
+        options.addArguments("--user-data-dir=" + userDataDir.toAbsolutePath().toString());
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36");
+        options.setBinary("/root/.cache/selenium/chrome/linux64/114.0.5735.90/chrome");
 
         WebDriver driver = new ChromeDriver(options);
         try {
             driver.get(url);
-
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-            // 1) Attendre le readyState complet
-            wait.until(d -> ((JavascriptExecutor) d)
-                    .executeScript("return document.readyState")
-                    .equals("complete"));
-            // 2) Attendre la présence d'un élément concret
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(waitedCssSelector)));
-
-            String html = driver.getPageSource();
-            log.debug("HTML Selenium récupéré ({} chars)", html.length());
-            return Jsoup.parse(html, url);
-        } catch (Exception seEx) {
-            log.error("Erreur Selenium : {}", seEx.getMessage(), seEx);
-            throw new IOException(seEx);
+            new WebDriverWait(driver, Duration.ofSeconds(30))
+                    .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(waitedCssSelector)));
+            String html = ((JavascriptExecutor) driver).executeScript("return document.documentElement.outerHTML").toString();
+            return Jsoup.parse(html);
         } finally {
-            driver.quit();  // ferme et libère le dossier tempProfile
+            driver.quit();
+            // on peut tenter de nettoyer le dossier
+            try {
+                Files.walk(userDataDir)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (IOException ignored) { }
         }
     }
+
 }
