@@ -99,18 +99,15 @@ RUN dnf install -y tzdata && \
     ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
     echo "Europe/London" > /etc/timezone
 
-# 1) Installer les dépendances pour Chrome
-RUN apt-get update \
-    && apt-get install -y wget gnupg2 unzip libnss3 libgconf-2-4 \
-    && rm -rf /var/lib/apt/lists/*
+RUN dnf install -y \
+      wget \
+      unzip \
+      nss \
+      GConf2 \
+      libXScrnSaver \
+      redhat-lsb-core \
+    && dnf clean all
 
-# 2) Installer Chrome stable
-RUN wget -q -O /tmp/google-chrome.deb \
-       https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && dpkg -i /tmp/google-chrome.deb || apt-get -fy install -y \
-    && rm /tmp/google-chrome.deb
-
-# 3) Installer le ChromeDriver correspondant
 ARG CHROMEDRIVER_VERSION=114.0.5735.90
 RUN wget -q -O /tmp/chromedriver.zip \
        https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip \
