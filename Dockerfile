@@ -99,6 +99,28 @@ RUN dnf install -y tzdata && \
     ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
     echo "Europe/London" > /etc/timezone
 
+# 1) Installer les dépendances pour Chrome
+RUN apt-get update \
+    && apt-get install -y wget gnupg2 unzip libnss3 libgconf-2-4 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2) Installer Chrome stable
+RUN wget -q -O /tmp/google-chrome.deb \
+       https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && dpkg -i /tmp/google-chrome.deb || apt-get -fy install -y \
+    && rm /tmp/google-chrome.deb
+
+# 3) Installer le ChromeDriver correspondant
+ARG CHROMEDRIVER_VERSION=114.0.5735.90
+RUN wget -q -O /tmp/chromedriver.zip \
+       https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip \
+    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+    && chmod +x /usr/local/bin/chromedriver \
+    && rm /tmp/chromedriver.zip
+
+# 4) Exposer le chemin du binaire Chrome (optionnel si /usr/bin est déjà par défaut)
+ENV CHROME_BINARY=/usr/bin/google-chrome-stable
+
 COPY ./docker/batch/baconBatchPublishersSpringer.sh /scripts/baconBatchPublishersSpringer.sh
 RUN chmod +x /scripts/baconBatchPublishersSpringer.sh
 COPY ./docker/batch/baconBatchPublishersEmerald.sh /scripts/baconBatchPublishersEmerald.sh
@@ -119,9 +141,6 @@ RUN chmod +x /scripts/bacon-batch-publishers.jar
 
 RUN mkdir /scripts/local/
 RUN chmod 776 /scripts/local/
-
-# variable d’environnement pour indiquer à votre code où se trouve le binaire
-ENV CHROME_BINARY=/root/.cache/selenium/chrome/linux64/114.0.5735.90/chrome
 
 COPY ./docker/batch/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
