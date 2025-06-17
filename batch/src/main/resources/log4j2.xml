@@ -16,6 +16,9 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="BaconEditeursLogAppender"/>
         </Logger>
+        <!-- Filtrer uniquement les warnings CDP spécifiques -->
+        <Logger name="org.openqa.selenium.devtools.CdpVersionFinder" level="OFF"/>
+        <Logger name="org.openqa.selenium.chromium.ChromiumDriver" level="ERROR"/>
         <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>

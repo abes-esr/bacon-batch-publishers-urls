@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class AnnualReviewsEditeur implements Editeur, Serializable {
+public class WileyEditeur implements Editeur, Serializable {
     private final String pathToUrlsFile;
     private final String pathToRenommerFile;
     private final String pageUrl;
@@ -26,7 +26,7 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
 
     private final DownloadService downloadService;
 
-    public AnnualReviewsEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
+    public WileyEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
         this.pathToUrlsFile = pathToUrlsFile.replace("editeur",getAlias().toString().toLowerCase()) + "liste_urls.txt";
         this.pathToRenommerFile = pathToRenommerFile.replace("editeur",getAlias().toString().toLowerCase())  + "renommer.txt";
         this.pageUrl = pageUrl;
@@ -38,7 +38,7 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
 
     @Override
     public ALIAS_EDITEUR getAlias() {
-        return ALIAS_EDITEUR.ANNUALREVIEWS;
+        return ALIAS_EDITEUR.WILEY;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
                 urls.add(line);
             }
         } catch (IOException e) {
-            log.error("Erreur d'accès au fichier des urls AnnualReviews");
+            log.error("Erreur d'accès au fichier des urls Wiley");
             throw e;
         }
 
@@ -60,21 +60,19 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc =downloadService.fetchDocument(pageUrl,"tbody");
+            Document doc = downloadService.fetchDocument(pageUrl,"ul");
             Elements hrefs = doc.select("a[href]");
-            int cpt = 0;
-            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/pb-assets/ar-site/kbart") && url.attribute("href").getValue().endsWith(".txt")).toList();
+            int cpt = 1;
+            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().replace(" ", "%20").startsWith("/pb-assets/Lib%20Marketing/KBART/") && url.attribute("href").getValue().replace(".TXT",".txt").endsWith(".txt")).toList();
             for (String url : urls) {
-                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().replace("/pb-assets/ar-site/kbart","").replaceAll("\\d{4}-\\d{2}-\\d{2}.txt", "").contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
+                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
                 if (fileUrlOpt.isPresent()) {
                     String fileUrl = fileUrlOpt.get();
-                    log.info("téléchargement : " + fileUrl);
-
                     for (int attempt = 0; attempt < 3; attempt++) {
                         //vérification que l'url répond
-                        ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + fileUrl);
+                        ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + fileUrl.replace(" ", "%20"));
                         if (response.getStatusCode() == HttpStatus.OK) {
-                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.replaceAll("/pb-assets/ar-site/kbart/", "")), Objects.requireNonNull(response.getBody()));
+                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.substring(fileUrl.lastIndexOf("/")).replace(".TXT",".txt")), Objects.requireNonNull(response.getBody()));
                             cpt++;
                             break;
                         } else {
@@ -98,7 +96,7 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
             }
         } catch (Exception e) {
             e.getStackTrace();
-            log.error("Erreur dans la récupération des fichiers sur le site de l'éditeur AnnualReviews " + e.getMessage());
+            log.error("Erreur dans la récupération des fichiers sur le site de l'éditeur Wiley " + e.getMessage());
         }
     }
 
@@ -116,11 +114,12 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
                 stream.forEach(file -> {
                     if (Files.isRegularFile(file)) {
                         String filename = file.getFileName().toString();
-                        String extractPrefix = filename.split("_(\\d{4}-\\d{2}-\\d{2}).txt")[0];
+                        String extractPrefix = filename.split("_(\\d{4}-\\d{2}-\\d{2})")[0];
+                        String extractDate = filename.replaceAll(".*_(\\d{4}-\\d{2}-\\d{2}).*", "$1");
                         String newPrefix = mapRenommage.get(extractPrefix);
                         if( newPrefix != null ) {
                             try {
-                                File newFile = new File(file.toString().replace(extractPrefix, newPrefix).replace(".txt", ".tsv"));
+                                File newFile = new File(pathToFilesDownloaded +  newPrefix + "_" + extractDate + ".tsv");
                                 Files.move(file, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                                 log.info("Renommage du fichier {} en {}", filename, newFile.getName());
                             } catch (IOException e) {
@@ -132,13 +131,13 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
                 });
             }
         } catch (IOException e) {
-            log.error("Impossible d'ouvrir le fichier de renommage AnnualReviews");
+            log.error("Impossible d'ouvrir le fichier de renommage Wiley");
         }
     }
 
     @Override
     public void envoiMail(Mailer mailer) {
-        String requestJson = mailer.mailToJSON(emailAdmin, "Récupération des fichiers Kbart AnnualReviews terminée", "Le téléchargement des fichiers Kbart sur le site de AnnualReviews s'est terminé avec succès !");
+        String requestJson = mailer.mailToJSON(emailAdmin, "Récupération des fichiers Kbart Wiley terminée", "Le téléchargement des fichiers Kbart sur le site de Wiley s'est terminé avec succès !");
         mailer.sendMail(requestJson);
     }
 }
