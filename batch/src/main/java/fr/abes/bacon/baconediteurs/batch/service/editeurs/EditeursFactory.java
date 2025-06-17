@@ -31,6 +31,12 @@ public class EditeursFactory {
     @Value("${annualreviews.downloadUrl}")
     private String annualReviewsDownloadUrl;
 
+    @Value("${rsc.pageUrl}")
+    private String RscPageUrl;
+
+    @Value("${rsc.downloadUrl}")
+    private String RscDownloadUrl;
+
     @Value("${projecteuclid.pageUrl}")
     private String projecteuclidPageUrl;
 
@@ -95,6 +101,9 @@ public class EditeursFactory {
             }
             case ANNUALREVIEWS -> {
                 return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case RSC -> {
+                return new RscEditeur(pathToUrlsFile, pathToRenommerFile, RscPageUrl, RscDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
