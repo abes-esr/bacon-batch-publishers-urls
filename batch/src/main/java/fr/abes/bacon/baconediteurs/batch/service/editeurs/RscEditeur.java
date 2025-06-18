@@ -60,7 +60,7 @@ public class RscEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc =downloadService.fetchDocument(pageUrl,"rsc-ui");
+            Document doc = downloadService.fetchDocument(pageUrl,"rsc-ui");
             Elements hrefs = doc.select("a[href]");
             int cpt = 1;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/globalassets/05-journals-books-databases/librarians-information/kbart-marc-urls") && url.attribute("href").getValue().endsWith(".txt")).toList();

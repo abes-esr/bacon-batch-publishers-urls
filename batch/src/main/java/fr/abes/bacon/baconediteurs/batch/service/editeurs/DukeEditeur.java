@@ -63,7 +63,7 @@ public class DukeEditeur implements Editeur {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc =downloadService.fetchDocument(pageUrl, "section");
+            Document doc = downloadService.fetchDocument(pageUrl, "section");
             Elements hrefs = doc.select("a[href]");
             int cpt = 0;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("https://assets-us-01.kc-usercontent.com") && url.attribute("href").getValue().endsWith(".txt")).toList();

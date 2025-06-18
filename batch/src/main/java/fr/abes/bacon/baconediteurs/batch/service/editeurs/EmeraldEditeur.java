@@ -3,9 +3,7 @@ package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
 import fr.abes.bacon.core.ALIAS_EDITEUR;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -59,9 +57,7 @@ public class EmeraldEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = Jsoup.connect(emeraldDownloadUrl).userAgent("PostmanRuntime/7.44.0")
-                    .header("accept", "*/*")
-                    .timeout(10 * 1000).get();
+            Document doc = downloadService.fetchDocument(emeraldDownloadUrl, "ul");
             Elements hrefs = doc.select("a[href]");
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().endsWith(".txt")).toList();
             for (String url : urls) {
