@@ -74,7 +74,7 @@ public class RscEditeur implements Editeur, Serializable {
                         //vérification que l'url répond
                         ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + fileUrl);
                         if (response.getStatusCode() == HttpStatus.OK) {
-                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.substring(fileUrl.lastIndexOf("/"))), Objects.requireNonNull(response.getBody()));
+                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.substring(fileUrl.lastIndexOf("/")+1,fileUrl.lastIndexOf("?"))), Objects.requireNonNull(response.getBody()));
                             cpt++;
                             break;
                         } else {
