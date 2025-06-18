@@ -46,6 +46,12 @@ public class EditeursFactory {
     @Value("${emerald.downloadUrl}")
     private String emeraldDownloadUrl;
 
+    @Value("${wiley.pageUrl}")
+    private String WileyPageUrl;
+
+    @Value("${wiley.downloadUrl}")
+    private String WileyDownloadUrl;
+
     @Value("${pathToFilesDownloaded}")
     private String pathToFilesDownloaded;
 
@@ -104,6 +110,9 @@ public class EditeursFactory {
             }
             case RSC -> {
                 return new RscEditeur(pathToUrlsFile, pathToRenommerFile, RscPageUrl, RscDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case WILEY -> {
+                return new WileyEditeur(pathToUrlsFile, pathToRenommerFile, WileyPageUrl, WileyDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }

@@ -148,6 +148,8 @@ COPY ./docker/batch/baconBatchPublishersDuke.sh /scripts/baconBatchPublishersDuk
 RUN chmod +x /scripts/baconBatchPublishersDuke.sh
 COPY ./docker/batch/baconBatchPublishersRsc.sh /scripts/baconBatchPublishersRsc.sh
 RUN chmod +x /scripts/baconBatchPublishersRsc.sh
+COPY ./docker/batch/baconBatchPublishersWiley.sh /scripts/baconBatchPublishersWiley.sh
+RUN chmod +x /scripts/baconBatchPublishersWiley.sh
 
 COPY --from=batch-builder /application/bacon-batch-publishers.jar /scripts/bacon-batch-publishers.jar
 RUN chmod +x /scripts/bacon-batch-publishers.jar
