@@ -33,6 +33,8 @@ if [ "$BACON_BATCH_PUBLISHERS_AT_STARTUP" = "1" ]; then
   /scripts/baconBatchPublishersDuke.sh
   echo "-> Lancement de baconBatchPublishersRsc.sh au démarrage du conteneur"
   /scripts/baconBatchPublishersRsc.sh
+  echo "-> Lancement de baconBatchPublishersWiley.sh au démarrage du conteneur"
+  /scripts/baconBatchPublishersWiley.sh
 fi
 
 exec "$@"
