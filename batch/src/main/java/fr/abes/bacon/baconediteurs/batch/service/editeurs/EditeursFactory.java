@@ -52,6 +52,12 @@ public class EditeursFactory {
     @Value("${wiley.downloadUrl}")
     private String WileyDownloadUrl;
 
+    @Value("${karger.pageUrl}")
+    private String KargerPageUrl;
+
+    @Value("${karger.downloadUrl}")
+    private String KargerDownloadUrl;
+
     @Value("${pathToFilesDownloaded}")
     private String pathToFilesDownloaded;
 
@@ -103,7 +109,6 @@ public class EditeursFactory {
             }
             case PROJECTEUCLID -> {
                 return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
-
             }
             case ANNUALREVIEWS -> {
                 return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
@@ -113,6 +118,9 @@ public class EditeursFactory {
             }
             case WILEY -> {
                 return new WileyEditeur(pathToUrlsFile, pathToRenommerFile, WileyPageUrl, WileyDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case KARGER -> {
+                return new KargerEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, KargerPageUrl, KargerDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }
