@@ -60,12 +60,12 @@ public class RscEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = downloadService.fetchDocument(pageUrl,"rsc-ui");
+            Document doc = downloadService.fetchDocument(pageUrl,"a");
             Elements hrefs = doc.select("a[href]");
             int cpt = 1;
-            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/globalassets/05-journals-books-databases/librarians-information/kbart-marc-urls") && url.attribute("href").getValue().endsWith(".txt")).toList();
+            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/getContentAsset/") && url.attribute("href").getValue().endsWith(".txt?language=en")).toList();
             for (String url : urls) {
-                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().replace("/globalassets/05-journals-books-databases/librarians-information/kbart-marc-urls","").replaceAll("\\d{4}-\\d{2}-\\d{2}.txt", "").contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
+                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().replace("/getContentAsset/","").replaceAll("\\d{4}-\\d{2}-\\d{2}.txt", "").contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
                 if (fileUrlOpt.isPresent()) {
                     String fileUrl = fileUrlOpt.get();
                     log.info("téléchargement : " + fileUrl);
