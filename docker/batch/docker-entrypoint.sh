@@ -35,6 +35,8 @@ if [ "$BACON_BATCH_PUBLISHERS_AT_STARTUP" = "1" ]; then
   /scripts/baconBatchPublishersRsc.sh
   echo "-> Lancement de baconBatchPublishersWiley.sh au démarrage du conteneur"
   /scripts/baconBatchPublishersWiley.sh
+  echo "-> Lancement de baconBatchPublishersKarger.sh au démarrage du conteneur"
+  /scripts/baconBatchPublishersKarger.sh
 fi
 
 exec "$@"
