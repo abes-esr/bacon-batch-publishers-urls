@@ -55,6 +55,9 @@ jobs:
           echo "releaseVersion=$releaseVersion" >> $GITHUB_OUTPUT
           echo "snapshotVersion=$snapshotVersion" >> $GITHUB_OUTPUT
 
+          echo "New tag: $releaseVersion"
+          echo "New Snapshot tag: $snapshotVersion"
+
       - name: 'Verify release is created only on "main" or "master" git branch'
         run: |
           CURRENT_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
