@@ -31,6 +31,12 @@ public class EditeursFactory {
     @Value("${annualreviews.downloadUrl}")
     private String annualReviewsDownloadUrl;
 
+    @Value("${rsc.pageUrl}")
+    private String RscPageUrl;
+
+    @Value("${rsc.downloadUrl}")
+    private String RscDownloadUrl;
+
     @Value("${projecteuclid.pageUrl}")
     private String projecteuclidPageUrl;
 
@@ -39,6 +45,18 @@ public class EditeursFactory {
 
     @Value("${emerald.downloadUrl}")
     private String emeraldDownloadUrl;
+
+    @Value("${wiley.pageUrl}")
+    private String WileyPageUrl;
+
+    @Value("${wiley.downloadUrl}")
+    private String WileyDownloadUrl;
+
+    @Value("${karger.pageUrl}")
+    private String KargerPageUrl;
+
+    @Value("${karger.downloadUrl}")
+    private String KargerDownloadUrl;
 
     @Value("${pathToFilesDownloaded}")
     private String pathToFilesDownloaded;
@@ -91,10 +109,18 @@ public class EditeursFactory {
             }
             case PROJECTEUCLID -> {
                 return new ProjectEuclidEditeur(pathToUrlsFile, pathToRenommerFile, projecteuclidPageUrl, projecteuclidDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
-
             }
             case ANNUALREVIEWS -> {
                 return new AnnualReviewsEditeur(pathToUrlsFile, pathToRenommerFile, annualReviewsPageUrl, annualReviewsDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case RSC -> {
+                return new RscEditeur(pathToUrlsFile, pathToRenommerFile, RscPageUrl, RscDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case WILEY -> {
+                return new WileyEditeur(pathToUrlsFile, pathToRenommerFile, WileyPageUrl, WileyDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
+            }
+            case KARGER -> {
+                return new KargerEditeur(pathToUrlsFile, pathToRenommerFile, pathToFusionnerFile, KargerPageUrl, KargerDownloadUrl, pathToFilesDownloaded, mailAdmin, downloadService);
             }
             default -> throw new IllegalArgumentException("Unsupported EDITEUR " + alias);
         }

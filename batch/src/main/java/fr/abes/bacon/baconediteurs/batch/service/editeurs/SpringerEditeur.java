@@ -4,7 +4,6 @@ import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
 import fr.abes.bacon.core.ALIAS_EDITEUR;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -61,7 +60,7 @@ public class SpringerEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = Jsoup.connect(pageUrl).get();
+            Document doc = downloadService.fetchDocument(pageUrl,"ul");
             Elements hrefs = doc.select("a[href]");
             int cpt = 0;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/metadata/kbart") && url.attribute("href").getValue().endsWith(".txt")).toList();

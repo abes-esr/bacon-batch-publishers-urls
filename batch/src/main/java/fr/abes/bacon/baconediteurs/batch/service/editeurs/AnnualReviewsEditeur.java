@@ -1,6 +1,5 @@
 package fr.abes.bacon.baconediteurs.batch.service.editeurs;
 
-import fr.abes.bacon.baconediteurs.batch.service.CloudflareBypass;
 import fr.abes.bacon.baconediteurs.batch.service.DownloadService;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
 import fr.abes.bacon.core.ALIAS_EDITEUR;
@@ -61,7 +60,7 @@ public class AnnualReviewsEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = CloudflareBypass.fetchDocument(pageUrl,"tbody");
+            Document doc = downloadService.fetchDocument(pageUrl,"tbody");
             Elements hrefs = doc.select("a[href]");
             int cpt = 0;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/pb-assets/ar-site/kbart") && url.attribute("href").getValue().endsWith(".txt")).toList();

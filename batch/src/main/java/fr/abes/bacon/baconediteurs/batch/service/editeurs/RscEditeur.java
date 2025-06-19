@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class ProjectEuclidEditeur implements Editeur, Serializable {
+public class RscEditeur implements Editeur, Serializable {
     private final String pathToUrlsFile;
     private final String pathToRenommerFile;
     private final String pageUrl;
@@ -26,7 +26,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
 
     private final DownloadService downloadService;
 
-    public ProjectEuclidEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
+    public RscEditeur(String pathToUrlsFile, String pathToRenommerFile, String pageUrl, String downloadUrl, String pathToFilesDownloaded, String emailAdmin, DownloadService downloadService) {
         this.pathToUrlsFile = pathToUrlsFile.replace("editeur",getAlias().toString().toLowerCase()) + "liste_urls.txt";
         this.pathToRenommerFile = pathToRenommerFile.replace("editeur",getAlias().toString().toLowerCase())  + "renommer.txt";
         this.pageUrl = pageUrl;
@@ -38,7 +38,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
 
     @Override
     public ALIAS_EDITEUR getAlias() {
-        return ALIAS_EDITEUR.PROJECTEUCLID;
+        return ALIAS_EDITEUR.RSC;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
                 urls.add(line);
             }
         } catch (IOException e) {
-            log.error("Erreur d'accès au fichier des urls ProjectEuclid");
+            log.error("Erreur d'accès au fichier des urls Rsc");
             throw e;
         }
 
@@ -60,21 +60,21 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = downloadService.fetchDocument(pageUrl,"ul");
+            Document doc = downloadService.fetchDocument(pageUrl,"a");
             Elements hrefs = doc.select("a[href]");
-            int cpt = 0;
-            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("documents/2025%20Title%20Lists") && url.attribute("href").getValue().endsWith(".txt")).toList();
+            int cpt = 1;
+            List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/getContentAsset/") && url.attribute("href").getValue().endsWith(".txt?language=en")).toList();
             for (String url : urls) {
-                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().replace("documents/2025%20Title%20Lists","").replaceAll("\\d{4}-\\d{2}-\\d{2}.txt", "").contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
+                Optional<String> fileUrlOpt = listeHref.stream().filter(href -> Objects.requireNonNull(href.attribute("href")).getValue().replace("/getContentAsset/","").replaceAll("\\d{4}-\\d{2}-\\d{2}.txt", "").contains(url)).map(href -> Objects.requireNonNull(href.attribute("href")).getValue()).findFirst();
                 if (fileUrlOpt.isPresent()) {
                     String fileUrl = fileUrlOpt.get();
                     log.info("téléchargement : " + fileUrl);
 
                     for (int attempt = 0; attempt < 3; attempt++) {
                         //vérification que l'url répond
-                        ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + "/" +fileUrl);
+                        ResponseEntity<byte[]> response = downloadService.getRestCall(downloadUrl + fileUrl);
                         if (response.getStatusCode() == HttpStatus.OK) {
-                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.replaceAll("documents/2025%20Title%20Lists/", "")), Objects.requireNonNull(response.getBody()));
+                            Files.write(Paths.get(pathToFilesDownloaded + fileUrl.substring(fileUrl.lastIndexOf("/")+1,fileUrl.lastIndexOf("?"))), Objects.requireNonNull(response.getBody()));
                             cpt++;
                             break;
                         } else {
@@ -98,7 +98,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
             }
         } catch (Exception e) {
             e.getStackTrace();
-            log.error("Erreur dans la récupération des fichiers sur le site de l'éditeur ProjectEuclid " + e.getMessage());
+            log.error("Erreur dans la récupération des fichiers sur le site de l'éditeur Rsc " + e.getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
                 stream.forEach(file -> {
                     if (Files.isRegularFile(file)) {
                         String filename = file.getFileName().toString();
-                        String extractPrefix = filename.split("_(\\d{4}-\\d{2}-\\d{2}).txt")[0];
+                        String extractPrefix = filename.split("_(\\d{4}-\\d{2}-\\d{2})").length > 1 ? filename.split("_(\\d{4}-\\d{2}-\\d{2})")[0] : filename.split("(\\d{4}-\\d{2}-\\d{2})")[0];
                         String newPrefix = mapRenommage.get(extractPrefix);
                         if( newPrefix != null ) {
                             try {
@@ -132,13 +132,13 @@ public class ProjectEuclidEditeur implements Editeur, Serializable {
                 });
             }
         } catch (IOException e) {
-            log.error("Impossible d'ouvrir le fichier de renommage ProjectEuclid");
+            log.error("Impossible d'ouvrir le fichier de renommage Rsc");
         }
     }
 
     @Override
     public void envoiMail(Mailer mailer) {
-        String requestJson = mailer.mailToJSON(emailAdmin, "Récupération des fichiers Kbart ProjectEuclid terminée", "Le téléchargement des fichiers Kbart sur le site de ProjectEuclid s'est terminé avec succès !");
+        String requestJson = mailer.mailToJSON(emailAdmin, "Récupération des fichiers Kbart Rsc terminée", "Le téléchargement des fichiers Kbart sur le site de Rsc s'est terminé avec succès !");
         mailer.sendMail(requestJson);
     }
 }
