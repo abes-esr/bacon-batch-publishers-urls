@@ -64,6 +64,8 @@ RUN chmod +x /scripts/bacon-web-publishers.jar
 RUN mkdir /scripts/local/
 RUN chmod 776 /scripts/local/
 
+EXPOSE 8082
+
 ENTRYPOINT ["java", "-jar", "bacon-web-publishers.jar"]
 
 FROM rockylinux:8 as batch-image
