@@ -3,6 +3,7 @@ package fr.abes.bacon.baconediteurs.batch.service;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -12,15 +13,20 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +77,7 @@ public class DownloadService {
      * @param url URL du fichier à télécharger
      * @return ResponseEntity avec le contenu du fichier
      */
-    public ResponseEntity<byte[]> getRestCall(String url) throws RestClientException {
+    public ResponseEntity<byte[]> getRestCall(String url) throws Exception {
         log.debug("Téléchargement du fichier {}", url);
 
         try {
@@ -102,10 +108,34 @@ public class DownloadService {
 
             return response;
 
+        } catch (ResourceAccessException e){
+            return downloadDocumentTrustAll(url);
         } catch (Exception e) {
             return downloadFileWithSelenium(url);
         }
     }
+
+    public static ResponseEntity<byte[]> downloadDocumentTrustAll(String url) throws Exception {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) { }
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) { }
+                }
+        };
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        SSLSocketFactory sslSocketFactory = sc.getSocketFactory();
+
+        Document re = Jsoup.connect(url)
+                .sslSocketFactory(sslSocketFactory)
+                .ignoreContentType(true)
+                .parser(Parser.xmlParser())
+                .timeout(10_000)
+                .get();
+        return ResponseEntity.ok().contentType(MediaType.TEXT_HTML).body(re.html().getBytes(StandardCharsets.UTF_8));
+    }
+
 
     /**
      * Crée les en-têtes HTTP standards pour simuler un navigateur
@@ -294,10 +324,14 @@ public class DownloadService {
             if (pageSource.contains("<!DOCTYPE")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-
+            pageSource = pageSource.replaceAll("\s+style=\"([^\"]*)\"" , "");
             // Sinon, traiter comme du contenu binaire
-            byte[] content = pageSource.getBytes(StandardCharsets.UTF_8);
-
+            byte[] content;
+            if (pageSource.contains("<pre>")) {
+                content = pageSource.substring(pageSource.lastIndexOf("<pre>") + 5, pageSource.lastIndexOf("</pre>")).getBytes(StandardCharsets.UTF_8);
+            } else {
+                content = pageSource.getBytes(StandardCharsets.UTF_8);
+            }
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
