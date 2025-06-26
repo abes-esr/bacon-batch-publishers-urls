@@ -67,7 +67,7 @@ RUN dnf install -y \
     && dnf clean all
 
 # Installer ChromeDriver compatible
-ARG CHROMEDRIVER_VERSION=137.0.7151.120
+ARG CHROMEDRIVER_VERSION=137.0.7151.119
 RUN wget -q -O /tmp/chromedriver.zip \
        https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip \
     && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
@@ -144,7 +144,7 @@ RUN dnf install -y \
     && dnf clean all
 
 # Installer ChromeDriver compatible
-ARG CHROMEDRIVER_VERSION=137.0.7151.120
+ARG CHROMEDRIVER_VERSION=137.0.7151.119
 RUN wget -q -O /tmp/chromedriver.zip \
        https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip \
     && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
