@@ -294,10 +294,14 @@ public class DownloadService {
             if (pageSource.contains("<!DOCTYPE")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
-
+            pageSource = pageSource.replaceAll("\s+style=\"([^\"]*)\"" , "");
             // Sinon, traiter comme du contenu binaire
-            byte[] content = pageSource.getBytes(StandardCharsets.UTF_8);
-
+            byte[] content;
+            if (pageSource.contains("<pre>")) {
+                content = pageSource.substring(pageSource.lastIndexOf("<pre>") + 5, pageSource.lastIndexOf("</pre>")).getBytes(StandardCharsets.UTF_8);
+            } else {
+                content = pageSource.getBytes(StandardCharsets.UTF_8);
+            }
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
