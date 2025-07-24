@@ -64,7 +64,7 @@ public class KargerEditeur implements Editeur, Serializable {
     @Override
     public void telechargementFichiers(List<String> urls) {
         try {
-            Document doc = downloadService.fetchDocument(pageUrl,"Download");
+            Document doc = downloadService.fetchDocument(pageUrl,"section");
             Elements hrefs = doc.select("a[href]");
             int cpt = 1;
             List<Element> listeHref = hrefs.stream().filter(url -> Objects.requireNonNull(url.attribute("href")).getValue().startsWith("/DocumentLibrary/") && url.attribute("href").getValue().endsWith(".txt")).toList();
