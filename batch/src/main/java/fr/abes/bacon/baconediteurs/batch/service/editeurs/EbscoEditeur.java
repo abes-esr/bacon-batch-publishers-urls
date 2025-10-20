@@ -74,7 +74,7 @@ public class EbscoEditeur implements Editeur, Serializable {
 
     @Override
     public void envoiMail(Mailer mailer) {
-        String requestJson = mailer.mailToJSON(mailAdmin, "Récupération des fichiers Kbart Ebsco termninée", "Le téléchargement des fichiers Kbart sur le serveur d'Ebsco s'est terminé avec succès !");
+        String requestJson = mailer.mailToJSON(mailAdmin, "Récupération des fichiers Kbart Ebsco terminée", "Le téléchargement des fichiers Kbart sur le serveur d'Ebsco s'est terminé avec succès !");
         mailer.sendMail(requestJson);
     }
 

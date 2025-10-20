@@ -4,16 +4,13 @@ import fr.abes.bacon.baconediteurs.batch.service.FtpService;
 import fr.abes.bacon.baconediteurs.batch.service.mail.Mailer;
 import fr.abes.bacon.core.ALIAS_EDITEUR;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Classe d'implémentation de l'interface Editeur pour gérer les fichiers KBART de l'éditeur DeGruyter.
@@ -158,7 +155,7 @@ public class DegruyterEditeur implements Editeur, Serializable {
      */
     @Override
     public void envoiMail(Mailer mailer) {
-        String requestJson = mailer.mailToJSON(mailAdmin, "Récupération des fichiers Kbart DeGruyter termninée", "Le téléchargement des fichiers Kbart sur le serveur d'DeGruyter s'est terminé avec succès !");
+        String requestJson = mailer.mailToJSON(mailAdmin, "Récupération des fichiers Kbart DeGruyter terminée", "Le téléchargement des fichiers Kbart sur le serveur d'DeGruyter s'est terminé avec succès !");
         mailer.sendMail(requestJson);
     }
 
