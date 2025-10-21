@@ -120,7 +120,7 @@ public class EmeraldEditeur implements Editeur, Serializable {
 
     @Override
     public void envoiMail(Mailer mailer) {
-        String requestJson = mailer.mailToJSON(mailAdmin, "Récupération des fichiers Kbart Emerald termninée", "Le téléchargement des fichiers Kbart sur le site d'Emerald s'est terminé avec succès !");
+        String requestJson = mailer.mailToJSON(mailAdmin, "Récupération des fichiers Kbart Emerald terminée", "Le téléchargement des fichiers Kbart sur le site d'Emerald s'est terminé avec succès !");
         mailer.sendMail(requestJson);
     }
 }
