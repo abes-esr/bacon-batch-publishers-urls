@@ -40,7 +40,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: "Buildx and push batch-image"
-        id: push
+        id: push-batch
         uses: docker/build-push-action@v7
         with:
           push: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) }}
@@ -48,7 +48,7 @@ jobs:
           tags: ${{ steps.docker_tag_meta.outputs.tags }}-batch-publishers
 
       - name: "Buildx and push api-image"
-        id: push
+        id: push-api
         uses: docker/build-push-action@v7
         with:
           push: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) }}
