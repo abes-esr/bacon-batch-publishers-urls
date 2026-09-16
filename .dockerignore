@@ -1,0 +1,12 @@
+# Le contexte est envoyé au démon docker à chaque build (COPY . /build/) :
+# on exclut tout ce qui n'est pas nécessaire au build, sinon le cache docker
+# est invalidé par des fichiers sans rapport.
+# ATTENTION: docker/ ne doit PAS être exclu, batch-image y copie ses scripts.
+.git
+.github
+.idea
+*.iml
+**/target/
+*.md
+Dockerfile
+.dockerignore
