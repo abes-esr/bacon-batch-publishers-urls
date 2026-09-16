@@ -56,6 +56,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) }}
           target: batch-image
           tags: ${{ steps.docker_tag_meta_batch.outputs.tags }}
+          labels: ${{ steps.docker_tag_meta_batch.outputs.labels }}
 
       - name: "Buildx and push api-image"
         id: push-api
@@ -64,3 +65,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) }}
           target: api-image
           tags: ${{ steps.docker_tag_meta_api.outputs.tags }}
+          labels: ${{ steps.docker_tag_meta_api.outputs.labels }}
