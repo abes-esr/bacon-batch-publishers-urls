@@ -57,6 +57,10 @@ jobs:
           target: batch-image
           tags: ${{ steps.docker_tag_meta_batch.outputs.tags }}
           labels: ${{ steps.docker_tag_meta_batch.outputs.labels }}
+          # Cache des layers entre 2 runs (stocke dans le cache GitHub Actions).
+          # Le scope evite que les 2 images s'ecrasent mutuellement.
+          cache-from: type=gha,scope=batch
+          cache-to: type=gha,mode=max,scope=batch
 
       - name: "Buildx and push api-image"
         id: push-api
@@ -66,3 +70,9 @@ jobs:
           target: api-image
           tags: ${{ steps.docker_tag_meta_api.outputs.tags }}
           labels: ${{ steps.docker_tag_meta_api.outputs.labels }}
+          # On lit aussi le scope "batch" : les 2 images partagent le stage
+          # runtime-base, deja exporte par l'etape precedente.
+          cache-from: |
+            type=gha,scope=api
+            type=gha,scope=batch
+          cache-to: type=gha,mode=max,scope=api
